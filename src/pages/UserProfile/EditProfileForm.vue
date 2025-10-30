@@ -2,43 +2,49 @@
   <form>
     <md-card>
       <md-card-header :data-background-color="dataBackgroundColor">
-        <h4 class="title">Edit Profile</h4>
-        <p class="category">Complete your profile</p>
+        <h4 class="title">Tu Perfil</h4>
+        <p class="category">¿Necesitas saber algo sobre ti mismo?</p>
       </md-card-header>
 
       <md-card-content>
         <div class="md-layout">
           <div class="md-layout-item md-small-size-100 md-size-33">
             <md-field>
-              <label>Company (disabled)</label>
+              <label>Rol</label>
               <md-input v-model="disabled" disabled></md-input>
             </md-field>
           </div>
           <div class="md-layout-item md-small-size-100 md-size-33">
             <md-field>
-              <label>User Name</label>
+              <label>Usuario</label>
               <md-input v-model="username" type="text"></md-input>
             </md-field>
           </div>
           <div class="md-layout-item md-small-size-100 md-size-33">
             <md-field>
-              <label>Email Address</label>
+              <label>Puntos</label>
+              <md-input v-model="points" disabled></md-input>
+            </md-field>
+          </div>
+          <div class="md-layout-item md-small-size-100 md-size-33">
+            <md-field>
+              <label>Correo (Opcional)</label>
               <md-input v-model="emailadress" type="email"></md-input>
             </md-field>
           </div>
           <div class="md-layout-item md-small-size-100 md-size-50">
             <md-field>
-              <label>First Name</label>
+              <label>Nombre (Opcional)</label>
               <md-input v-model="firstname" type="text"></md-input>
             </md-field>
           </div>
           <div class="md-layout-item md-small-size-100 md-size-50">
             <md-field>
-              <label>Last Name</label>
+              <label>Redes sociales (opcional)</label>
               <md-input v-model="lastname" type="text"></md-input>
             </md-field>
           </div>
-          <div class="md-layout-item md-small-size-100 md-size-100">
+          <!--div class="md-layout-item md-small-size-100 md-size-100">
             <md-field>
               <label>Adress</label>
               <md-input v-model="address" type="text"></md-input>
@@ -49,27 +55,27 @@
               <label>City</label>
               <md-input v-model="city" type="text"></md-input>
             </md-field>
-          </div>
+          </div-->
           <div class="md-layout-item md-small-size-100 md-size-33">
             <md-field>
-              <label>Country</label>
+              <label>País (Opcional)</label>
               <md-input v-model="country" type="text"></md-input>
             </md-field>
           </div>
-          <div class="md-layout-item md-small-size-100 md-size-33">
+          <!--div class="md-layout-item md-small-size-100 md-size-33">
             <md-field>
               <label>Postal Code</label>
               <md-input v-model="code" type="number"></md-input>
             </md-field>
-          </div>
+          </div-->
           <div class="md-layout-item md-size-100">
             <md-field maxlength="5">
-              <label>About Me</label>
+              <label>Cuentanos un poco sobre ti</label>
               <md-textarea v-model="aboutme"></md-textarea>
             </md-field>
           </div>
           <div class="md-layout-item md-size-100 text-right">
-            <md-button class="md-raised md-success">Update Profile</md-button>
+            <md-button class="md-raised md-success">Actualizar Perfil</md-button>
           </div>
         </div>
       </md-card-content>
@@ -89,6 +95,7 @@ export default {
     return {
       username: null,
       disabled: null,
+      points: null,
       emailadress: null,
       lastname: null,
       firstname: null,
@@ -97,7 +104,7 @@ export default {
       country: null,
       code: null,
       aboutme:
-        "Lamborghini Mercy, Your chick she so thirsty, I'm in that two seat Lambo.",
+        "Escribo estas palabras en acero, para que aquel que lo encuentre sepa de mi valor.",
     };
   },
 };

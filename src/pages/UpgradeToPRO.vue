@@ -3,11 +3,10 @@
     <div class="md-layout">
       <div class="md-layout-item md-size-66 mx-auto md-small-size-100">
         <md-card>
-          <md-card-header data-background-color="purple">
-            <h4 class="title">Vue Material Dashboard PRO</h4>
+          <md-card-header data-background-color="orange">
+            <h4 class="title">Plan premium</h4>
             <p class="category">
-              Are you looking for more components? Please check our Premium
-              Version of Vue Material Dashboard.
+              ¿Buscas ganar mas puntos por menos esfuerzo? ¡Suscribete a nuestro plan premium!
             </p>
           </md-card-header>
 
@@ -17,28 +16,23 @@
                 <thead>
                   <tr>
                     <th></th>
-                    <th class="text-center">Free</th>
-                    <th class="text-center">PRO</th>
+                    <th class="text-center">Gratuito</th>
+                    <th class="text-center">Premium</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td>Components</td>
-                    <td class="text-center">60</td>
-                    <td class="text-center">200</td>
+                    <td>Puntos por recorrido</td>
+                    <td class="text-center">10-15</td>
+                    <td class="text-center">20-30</td>
                   </tr>
                   <tr>
-                    <td>Plugins</td>
-                    <td class="text-center">2</td>
-                    <td class="text-center">15</td>
+                    <td>Aspectos</td>
+                    <td class="text-center">1</td>
+                    <td class="text-center">40</td>
                   </tr>
                   <tr>
-                    <td>Example Pages</td>
-                    <td class="text-center">3</td>
-                    <td class="text-center">27</td>
-                  </tr>
-                  <tr>
-                    <td>Login, Register, Pricing, Lock Pages</td>
+                    <td>Carrera de temporada</td>
                     <td class="text-center">
                       <i class="fa fa-times text-danger"></i>
                     </td>
@@ -48,8 +42,7 @@
                   </tr>
                   <tr>
                     <td>
-                      DataTables, VectorMap, SweetAlert, Wizard,
-                      jQueryValidation, FullCalendar etc...
+                      Habilidades exclusivas para tu vehiculo
                     </td>
                     <td class="text-center">
                       <i class="fa fa-times text-danger"></i>
@@ -59,7 +52,7 @@
                     </td>
                   </tr>
                   <tr>
-                    <td>Mini Sidebar</td>
+                    <td>Posibilidad de adquirir 1 punto por hora jugada</td>
                     <td class="text-center">
                       <i class="fa fa-times text-danger"></i>
                     </td>
@@ -68,7 +61,7 @@
                     </td>
                   </tr>
                   <tr>
-                    <td>Premium Support</td>
+                    <td>Atencion al cliente prioritaria</td>
                     <td class="text-center">
                       <i class="fa fa-times text-danger"></i>
                     </td>
@@ -77,15 +70,15 @@
                     </td>
                   </tr>
                   <tr>
-                    <td></td>
-                    <td class="text-center">Free</td>
-                    <td class="text-center">Just $59</td>
+                    <td>Precio</td>
+                    <td class="text-center">Gratis</td>
+                    <td class="text-center">$20.000.000.000</td>
                   </tr>
                   <tr>
                     <td class="text-center"></td>
                     <td class="text-center">
                       <md-button href="#" class="md-default md-round" disabled
-                        >Current Version</md-button
+                        >Version actual</md-button
                       >
                     </td>
                     <td class="text-center">
@@ -93,7 +86,7 @@
                         target="_blank"
                         href="https://www.creative-tim.com/product/vue-material-dashboard-pro/?ref=vue-md-free-upgrade-live"
                         class="md-info md-round"
-                        >Upgrade to PRO</md-button
+                        >Pasate a premium</md-button
                       >
                     </td>
                   </tr>

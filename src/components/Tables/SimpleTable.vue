@@ -2,10 +2,12 @@
   <div>
     <md-table v-model="users" :table-header-color="tableHeaderColor">
       <md-table-row slot="md-table-row" slot-scope="{ item }">
-        <md-table-cell md-label="Name">{{ item.name }}</md-table-cell>
-        <md-table-cell md-label="Country">{{ item.country }}</md-table-cell>
-        <md-table-cell md-label="City">{{ item.city }}</md-table-cell>
-        <md-table-cell md-label="Salary">{{ item.salary }}</md-table-cell>
+        <md-table-cell md-label="Fecha">{{ item.date }}</md-table-cell>
+        <md-table-cell md-label="Cliente">{{ item.client }}</md-table-cell>
+        <md-table-cell md-label="Conductor">{{ item.driver }}</md-table-cell>
+        <md-table-cell md-label="Origen">{{ item.Origin }}</md-table-cell>
+        <md-table-cell md-label="Destino">{{ item.Destiny }}</md-table-cell>
+        <md-table-cell md-label="Estado">{{ item.State }}</md-table-cell>
       </md-table-row>
     </md-table>
   </div>
@@ -25,40 +27,52 @@ export default {
       selected: [],
       users: [
         {
-          name: "Dakota Rice",
-          salary: "$36,738",
-          country: "Niger",
-          city: "Oud-Turnhout",
+          date: "29/10/25",
+          client: "Thor",
+          driver: "Thanos",
+          Origin: "Asgard",
+          Destiny: "New Asgard",
+          State: "Completado",
         },
         {
-          name: "Minerva Hooper",
-          salary: "$23,738",
-          country: "Curaçao",
-          city: "Sinaai-Waas",
+          date: "29/9/25",
+          client: "Goku",
+          driver: "Freezer",
+          Origin: "Vegeta",
+          Destiny: "Tierra",
+          State: "Completado",
         },
         {
-          name: "Sage Rodriguez",
-          salary: "$56,142",
-          country: "Netherlands",
-          city: "Overland Park",
+          date: "29/6/25",
+          client: "Jotaro",
+          driver: "DIO",
+          Origin: "Japon",
+          Destiny: "Egipto",
+          State: "Completado",
         },
         {
-          name: "Philip Chaney",
-          salary: "$38,735",
-          country: "Korea, South",
-          city: "Gloucester",
+          date: "29/8/25",
+          client: "Itadori",
+          driver: "Sukuna",
+          Origin: "Japon",
+          Destiny: "Vida feliz",
+          State: "Incompleto",
         },
         {
-          name: "Doris Greene",
-          salary: "$63,542",
-          country: "Malawi",
-          city: "Feldkirchen in Kārnten",
+          date: "29/7/25",
+          client: "Estudiante",
+          driver: "Pachco",
+          Origin: "Calculo Integral",
+          Destiny: "Calculo Vectorial",
+          State: "Incompleto",
         },
         {
-          name: "Mason Porter",
-          salary: "$78,615",
-          country: "Chile",
-          city: "Gloucester",
+          date: "29/2/25",
+          client: "Estudiante",
+          driver: "Matraz",
+          Origin: "Fundamentos",
+          Destiny: "Fuera de Fundamentos",
+          State: "En proceso gracias a Dios",
         },
       ],
     };

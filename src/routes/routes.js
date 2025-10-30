@@ -24,12 +24,12 @@ const routes = [
       },
       {
         path: "user",
-        name: "User Profile",
+        name: "Perfil",
         component: UserProfile,
       },
       {
         path: "table",
-        name: "Table List",
+        name: "Historial/Rankings",
         component: TableList,
       },
       {
@@ -57,13 +57,13 @@ const routes = [
       },
       {
         path: "upgrade",
-        name: "Upgrade to PRO",
+        name: "Vuelvete VIP",
         component: UpgradeToPRO,
       },
     ],
   },
   {
-    path: "/login",
+    path: "login",
     name: "Login",
     component: Login,
   }

@@ -12,7 +12,7 @@
 
 <script>
 export default {
-  name: "ordered-table",
+  name: "ranking-table",
   props: {
     tableHeaderColor: {
       type: String,
@@ -25,22 +25,22 @@ export default {
       users: [
         {
           id: 1,
-          user: "Dakota Rice",
+          user: "gogeta",
           points: "$36,738",
         },
         {
           id: 2,
-          user: "Minerva Hooper",
+          user: "vegetto",
           points: "$23,738",
         },
         {
           id: 3,
-          user: "Sage Rodriguez",
+          user: "gotenks",
           points: "$56,142",
         },
         {
           id: 4,
-          user: "Philip Chaney",
+          user: "kefla",
           points: "$38,735",
         },
       ],
