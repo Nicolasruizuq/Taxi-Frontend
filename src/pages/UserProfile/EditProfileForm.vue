@@ -22,6 +22,12 @@
           </div>
           <div class="md-layout-item md-small-size-100 md-size-33">
             <md-field>
+              <label>Contraseña</label>
+              <md-input v-model="username" type="text"></md-input>
+            </md-field>
+          </div>
+          <div class="md-layout-item md-small-size-100 md-size-33">
+            <md-field>
               <label>Puntos</label>
               <md-input v-model="points" disabled></md-input>
             </md-field>
@@ -44,17 +50,20 @@
               <md-input v-model="lastname" type="text"></md-input>
             </md-field>
           </div>
-          <!--div class="md-layout-item md-small-size-100 md-size-100">
+          <!--div class="md-layout-item md-small-size-100 md-size-50">
             <md-field>
-              <label>Adress</label>
-              <md-input v-model="address" type="text"></md-input>
+              <label for="opciones">Origen</label>
+                <md-select v-model="selectedOption" name="opciones" id="opciones">
+                <md-option value="opcion1">Opción 1</md-option>
+                <md-option value="opcion2">Opción 2</md-option>
+                <md-option value="opcion3">Opción 3</md-option>
+                <md-option value="opcion4">Opción 4</md-option>
+              </md-select>
             </md-field>
-          </div>
-          <div class="md-layout-item md-small-size-100 md-size-33">
-            <md-field>
-              <label>City</label>
-              <md-input v-model="city" type="text"></md-input>
-            </md-field>
+    
+            <div v-if="selectedOption" class="selected-value">
+              Seleccionaste: {{ selectedOption }}
+            </div>
           </div-->
           <div class="md-layout-item md-small-size-100 md-size-33">
             <md-field>
@@ -62,12 +71,6 @@
               <md-input v-model="country" type="text"></md-input>
             </md-field>
           </div>
-          <!--div class="md-layout-item md-small-size-100 md-size-33">
-            <md-field>
-              <label>Postal Code</label>
-              <md-input v-model="code" type="number"></md-input>
-            </md-field>
-          </div-->
           <div class="md-layout-item md-size-100">
             <md-field maxlength="5">
               <label>Cuentanos un poco sobre ti</label>

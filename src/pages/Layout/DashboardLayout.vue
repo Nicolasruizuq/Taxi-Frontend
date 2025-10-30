@@ -12,16 +12,16 @@
         <p>Dashboard</p>
       </sidebar-link>
       <sidebar-link to="/user">
-        <md-icon>person</md-icon>
+        <md-icon>account_circle</md-icon>
         <p>Perfil</p>
       </sidebar-link>
       <sidebar-link to="/table">
-        <md-icon>content_paste</md-icon>
-        <p>Historial/Rankings</p>
+        <md-icon>history</md-icon>
+        <p>Historial de viajes</p>
       </sidebar-link>
       <sidebar-link to="/typography">
-        <md-icon>library_books</md-icon>
-        <p>Typography</p>
+        <md-icon>emoji_events</md-icon>
+        <p>Rankings</p>
       </sidebar-link>
       <sidebar-link to="/icons">
         <md-icon>bubble_chart</md-icon>
@@ -74,8 +74,8 @@ export default {
   },
   data() {
     return {
-      sidebarBackground: "green",
-      sidebarBackgroundImage: require("@/assets/img/sidebar-2.jpg"),
+      sidebarBackground: "purple",
+      sidebarBackgroundImage: require("@/assets/img/sidebar-3.jpg"),
     };
   },
 };

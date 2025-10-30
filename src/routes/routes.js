@@ -29,12 +29,12 @@ const routes = [
       },
       {
         path: "table",
-        name: "Historial/Rankings",
+        name: "Historial de Viajes",
         component: TableList,
       },
       {
         path: "typography",
-        name: "Typography",
+        name: "Rankings",
         component: Typography,
       },
       {
