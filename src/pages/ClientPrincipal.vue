@@ -5,19 +5,19 @@
         <travel-form data-background-color="orange"> </travel-form>
       </div>
       <div class="md-layout-item md-medium-size-100 md-size-33">
-        <user-card> </user-card>
+        <taxi-map> </taxi-map>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { TravelForm, UserCard } from "@/pages";
+import { TravelForm, TaxiMap } from "@/pages";
 
 export default {
   components: {
     TravelForm,
-    UserCard,
+    TaxiMap,
   },
 };
 </script>

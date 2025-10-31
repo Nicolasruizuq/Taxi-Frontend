@@ -15,6 +15,10 @@
         <md-icon>local_taxi</md-icon>
         <p>Solicitud de viaje</p>
       </sidebar-link>
+      <sidebar-link to="/driverprincipal">
+        <md-icon>emoji_transportation</md-icon>
+        <p>Servicios disponibles</p>
+      </sidebar-link>
       <sidebar-link to="/user">
         <md-icon>account_circle</md-icon>
         <p>Perfil</p>

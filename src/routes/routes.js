@@ -11,6 +11,7 @@ import UpgradeToPRO from "@/pages/UpgradeToPRO.vue";
 import Login from "@/pages/Login.vue";
 import TravelForm from "../pages/Client/TravelForm.vue";
 import ClientPrincipal from "../pages/ClientPrincipal.vue";
+import DriverPrincipal from "../pages/DriverPrincipal.vue";
 
 
 const routes = [
@@ -28,6 +29,11 @@ const routes = [
         path: "clientprincipal",
         name: "Solicita tu servicio",
         component: ClientPrincipal,
+      },
+      {
+        path: "driverprincipal",
+        name: "Observa tus servicios disponibles",
+        component: DriverPrincipal,
       },
       {
         path: "user",

@@ -16,7 +16,7 @@
 </template>
 <script>
 export default {
-  name: "user-card",
+  name: "taxi-map",
   props: {
     cardUserImage: {
       type: String,
