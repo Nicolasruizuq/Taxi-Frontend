@@ -1,8 +1,8 @@
 <template>
   <div class="content">
     <div class="md-layout">
-      <div class="md-layout-item md-medium-size-100 md-size-30">
-        <edit-profile-form data-background-color="orange"> </edit-profile-form>
+      <div class="md-layout-item md-medium-size-100 md-size-40">
+        <travel-form data-background-color="orange"> </travel-form>
       </div>
       <div class="md-layout-item md-medium-size-100 md-size-33">
         <user-card> </user-card>
@@ -12,11 +12,11 @@
 </template>
 
 <script>
-import { EditProfileForm, UserCard } from "@/pages";
+import { TravelForm, UserCard } from "@/pages";
 
 export default {
   components: {
-    EditProfileForm,
+    TravelForm,
     UserCard,
   },
 };

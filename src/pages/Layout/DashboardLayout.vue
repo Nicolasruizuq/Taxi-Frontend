@@ -11,6 +11,10 @@
         <md-icon>dashboard</md-icon>
         <p>Dashboard</p>
       </sidebar-link>
+      <sidebar-link to="/clientprincipal">
+        <md-icon>local_taxi</md-icon>
+        <p>Solicitud de viaje</p>
+      </sidebar-link>
       <sidebar-link to="/user">
         <md-icon>account_circle</md-icon>
         <p>Perfil</p>

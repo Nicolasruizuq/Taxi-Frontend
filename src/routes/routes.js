@@ -9,6 +9,8 @@ import Maps from "@/pages/Maps.vue";
 import Notifications from "@/pages/Notifications.vue";
 import UpgradeToPRO from "@/pages/UpgradeToPRO.vue";
 import Login from "@/pages/Login.vue";
+import TravelForm from "../pages/Client/TravelForm.vue";
+import ClientPrincipal from "../pages/ClientPrincipal.vue";
 
 
 const routes = [
@@ -21,6 +23,11 @@ const routes = [
         path: "dashboard",
         name: "Dashboard",
         component: Dashboard,
+      },
+      {
+        path: "clientprincipal",
+        name: "Solicita tu servicio",
+        component: ClientPrincipal,
       },
       {
         path: "user",
