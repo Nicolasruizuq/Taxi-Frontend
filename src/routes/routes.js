@@ -14,8 +14,17 @@ import DriverPrincipal from "../pages/DriverPrincipal.vue";
 const routes = [
   {
     path: "/",
+    redirect: "/login",
+  },
+  {
+    path: "/login",
+    name: "Login",
+    component: Login,
+  },
+  {
+    path: "/app",
     component: DashboardLayout,
-    redirect: "/dashboard",
+    redirect: "/app/dashboard",
     children: [
       {
         path: "dashboard",
@@ -82,11 +91,7 @@ const routes = [
       },
     ],
   },
-  {
-    path: "/login",
-    name: "Login",
-    component: Login,
-  }
+  
 ];
 
 export default routes;

@@ -54,131 +54,55 @@
 </template>
 
 <script>
+import { useUserStore } from '../storages/userStorage';
+import { mapState } from 'pinia';
+
 export default {
-  name: "Login",
   data() {
     return {
       credentials: {
         username: "",
-        password: ""
+        password: "",
       },
-      loading: false,
       error: "",
-      users: [
-        {
-          id: 1,
-          username: "nicorusa",
-          password: "cliente123",
-          name: "Nicolás Ruiz",
-          role_id: 1,
-          type: "user"
-        },
-        {
-          id: 2,
-          username: "driver01",
-          password: "conductor123", 
-          name: "Carlos López",
-          role_id: 2,
-          type: "user"
-        },
-        {
-          id: 3,
-          username: "admin",
-          password: "1234",
-          name: "Administrador",
-          role_id: 1,
-          type: "user"
-        }
-      ]
+      loading: false,
     };
+  },
+  computed: {
+    ...mapState(useUserStore, ["user"]),
   },
   methods: {
     async login() {
-      if (!this.credentials.username || !this.credentials.password) {
-        this.error = "Por favor completa todos los campos";
-        return;
-      }
-
+      const store = useUserStore();
       this.loading = true;
       this.error = "";
 
-      try {
-        // Simular delay de red
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        const user = this.authenticateUser(this.credentials.username, this.credentials.password);
-        
-        if (user) {
-          this.loginSuccess(user);
-        } else {
-          this.loginError("Usuario o contraseña incorrectos");
-        }
-      } catch (error) {
-        this.loginError("Error al conectar con el servidor");
-      }
-    },
-
-    authenticateUser(username, password) {
-      return this.users.find(user => 
-        user.username === username && user.password === password
+      const result = await store.login(
+        this.credentials.username,
+        this.credentials.password
       );
-    },
 
-    loginSuccess(user) {
-      // Guardar usuario en localStorage
-      localStorage.setItem('currentUser', JSON.stringify(user));
-      localStorage.setItem('isAuthenticated', 'true');
-      localStorage.setItem('userRole', user.role_id.toString());
-      localStorage.setItem('userName', user.name);
+      this.loading = false;
 
-      console.log('Login exitoso:', user);
+      if (!result) {
+        this.error = "Usuario o contraseña incorrectos";
+        return;
+      }
+
+      console.log("✅ Usuario autenticado:", result);
 
       // Redirigir según el rol
-      this.redirectByRole(user.role_id);
-    },
-
-    loginError(message) {
-      this.loading = false;
-      this.error = message;
-    },
-
-    redirectByRole(roleId) {
-      this.loading = false;
-      
-      let targetRoute = '';
-      
-      switch(roleId) {
-        case 1: // Cliente
-          targetRoute = '/admin/clientprincipal';
-          break;
-        case 2: // Conductor
-          targetRoute = '/admin/driverprincipal';
-          break;
-        default:
-          targetRoute = '/admin/dashboard';
-      }
-
-      // Solo navegar si no estamos ya en esa ruta
-      if (this.$route.path !== targetRoute) {
-        this.$router.push(targetRoute);
-      }
+      const roleId = result.attributes.role_id;
+      if (roleId === 1) this.$router.push("/app/clientprincipal");
+      else if (roleId === 2) this.$router.push("/app/driverprincipal");
+      else this.$router.push("/app/dashboard");
     },
 
     fillCredentials(username, password) {
       this.credentials.username = username;
       this.credentials.password = password;
-      this.error = "";
-    }
+    },
   },
-
-  mounted() {
-    // Si ya está autenticado, redirigir automáticamente
-    const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
-    if (isAuthenticated) {
-      const userRole = parseInt(localStorage.getItem('userRole') || '0');
-      this.redirectByRole(userRole);
-    }
-  }
 };
 </script>
 

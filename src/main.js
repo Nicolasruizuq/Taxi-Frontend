@@ -31,8 +31,18 @@ import MaterialDashboard from "./material-dashboard";
 
 import Chartist from "chartist";
 
+import { createPinia, PiniaVuePlugin } from "pinia";
+//import VueCompositionApi from "@vue/composition-api";
+
+//Vue.use(VueCompositionApi);
+Vue.use(PiniaVuePlugin);
+
+// Crear instancia de Pinia
+const pinia = createPinia();
+
 // configure router
 const router = new VueRouter({
+  mode: "history",
   routes, // short for routes: routes
   linkExactActiveClass: "nav-item active",
 });
@@ -50,7 +60,6 @@ new Vue({
   el: "#app",
   render: (h) => h(App),
   router,
-  data: {
-    Chartist: Chartist,
-  },
+  pinia,
+  render: (h) => h(App),
 });
