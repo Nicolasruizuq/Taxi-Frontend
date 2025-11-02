@@ -8,6 +8,7 @@ import Maps from "@/pages/Maps.vue";
 import Notifications from "@/pages/Notifications.vue";
 import UpgradeToPRO from "@/pages/UpgradeToPRO.vue";
 import Login from "@/pages/Login.vue";
+import Register from "@/pages/Register.vue"
 import ClientPrincipal from "../pages/ClientPrincipal.vue";
 import DriverPrincipal from "../pages/DriverPrincipal.vue";
 
@@ -20,6 +21,11 @@ const routes = [
     path: "/login",
     name: "Login",
     component: Login,
+  },
+  {
+    path: "/register",
+    name: "Register",
+    component: Register,
   },
   {
     path: "/app",

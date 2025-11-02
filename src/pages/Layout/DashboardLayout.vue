@@ -43,10 +43,15 @@
         <md-icon>notifications</md-icon>
         <p>Notifications</p>
       </sidebar-link>
-      <sidebar-link to="/upgrade" class="active-pro">
-        <md-icon>unarchive</md-icon>
-        <p>Vuelvete VIP</p>
-      </sidebar-link>
+      
+      <li class="md-list-item logout-item" @click="logout">
+        <a class="md-list-item-router md-list-item-container md-button-clean">
+          <div class="md-list-item-content">
+            <md-icon>exit_to_app</md-icon>
+            <p>Cerrar sesión</p>
+          </div>
+        </a>
+      </li>
     </side-bar>
 
     <div class="main-panel">
@@ -71,6 +76,7 @@ import ContentFooter from "./ContentFooter.vue";
 import DashboardContent from "./Content.vue";
 import MobileMenu from "@/pages/Layout/MobileMenu.vue";
 import FixedPlugin from "./Extra/FixedPlugin.vue";
+import { useUserStore } from "../../storages/userStorage";
 
 export default {
   components: {
@@ -85,6 +91,13 @@ export default {
       sidebarBackground: "purple",
       sidebarBackgroundImage: require("@/assets/img/sidebar-3.jpg"),
     };
+  },
+  methods: {
+    logout() {
+      const store = useUserStore();
+      store.logout();
+      this.$router.push("/login");
+    },
   },
 };
 </script>

@@ -34,20 +34,10 @@
             {{ error }}
           </div>
         </form>
-
-        <!-- Usuarios de prueba -->
-        <div class="test-users">
-          <h3>Usuarios de Prueba</h3>
-          <div class="test-user" @click="fillCredentials('nicorusa', 'cliente123')">
-            <strong>Cliente:</strong> nicorusa / cliente123
-          </div>
-          <div class="test-user" @click="fillCredentials('driver01', 'conductor123')">
-            <strong>Conductor:</strong> driver01 / conductor123
-          </div>
-          <div class="test-user" @click="fillCredentials('admin', '1234')">
-            <strong>Admin:</strong> admin / 1234
-          </div>
-        </div>
+        <p class="register-text">
+          ¿Aún no estás registrado? 
+          <router-link to="/register" class="register-link">Regístrate</router-link>
+        </p>
       </div>
     </div>
   </div>
