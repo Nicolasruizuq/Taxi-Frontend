@@ -10,6 +10,8 @@ import TaxiMap from "./Client/TaxiMap.vue"
 
 import ServiceList from "../pages/Driver/ServiceList.vue"
 
-export { UserCard, EditProfileForm, TravelForm, TaxiMap, ServiceList };
+import DriverProgress from "../pages/Driver/DriverProgress.vue"
+
+export { UserCard, EditProfileForm, TravelForm, DriverProgress, ServiceList, TaxiMap };
 
 
