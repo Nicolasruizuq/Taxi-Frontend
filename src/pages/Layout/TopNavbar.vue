@@ -26,7 +26,7 @@
             </md-autocomplete>
           </div>
           <md-list>
-            <md-list-item href="#/">
+            <md-list-item href="/app/dashboard">
               <i class="material-icons">dashboard</i>
               <p class="hidden-lg hidden-md">Dashboard</p>
             </md-list-item>
@@ -50,7 +50,7 @@
 
             <li class="md-list-item">
               <a
-                href="#/notifications"
+                href="/app/notifications"
                 class="md-list-item-router md-list-item-container md-button-clean dropdown"
               >
                 <div class="md-list-item-content">
@@ -76,7 +76,7 @@
               </a>
             </li>
 
-            <md-list-item href="#/user">
+            <md-list-item href="/app/user">
               <i class="material-icons">person</i>
               <p class="hidden-lg hidden-md">Profile</p>
             </md-list-item>

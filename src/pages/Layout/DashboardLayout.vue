@@ -7,39 +7,39 @@
       :sidebar-background-image="sidebarBackgroundImage"
     >
       <mobile-menu slot="content"></mobile-menu>
-      <sidebar-link to="/dashboard">
+      <sidebar-link to="/app/dashboard">
         <md-icon>dashboard</md-icon>
         <p>Dashboard</p>
       </sidebar-link>
-      <sidebar-link to="/clientprincipal">
+      <sidebar-link to="/app/clientprincipal">
         <md-icon>local_taxi</md-icon>
         <p>Solicitud de viaje</p>
       </sidebar-link>
-      <sidebar-link to="/driverprincipal">
+      <sidebar-link to="/app/driverprincipal">
         <md-icon>emoji_transportation</md-icon>
         <p>Servicios disponibles</p>
       </sidebar-link>
-      <sidebar-link to="/user">
+      <sidebar-link to="/app/user">
         <md-icon>account_circle</md-icon>
         <p>Perfil</p>
       </sidebar-link>
-      <sidebar-link to="/table">
+      <sidebar-link to="/app/table">
         <md-icon>history</md-icon>
         <p>Historial de viajes</p>
       </sidebar-link>
-      <sidebar-link to="/typography">
+      <sidebar-link to="/app/typography">
         <md-icon>emoji_events</md-icon>
         <p>Rankings</p>
       </sidebar-link>
-      <sidebar-link to="/icons">
+      <sidebar-link to="/app/icons">
         <md-icon>bubble_chart</md-icon>
         <p>Icons</p>
       </sidebar-link>
-      <sidebar-link to="/maps">
+      <sidebar-link to="/app/maps">
         <md-icon>location_on</md-icon>
         <p>Maps</p>
       </sidebar-link>
-      <sidebar-link to="/notifications">
+      <sidebar-link to="/app/notifications">
         <md-icon>notifications</md-icon>
         <p>Notifications</p>
       </sidebar-link>

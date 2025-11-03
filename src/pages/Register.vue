@@ -93,6 +93,9 @@
 </template>
 
 <script>
+import { useUserStore } from '../storages/userStorage';
+import { mapState } from 'pinia';
+
 export default {
   name: "Register",
   data() {
@@ -111,20 +114,16 @@ export default {
   },
   methods: {
     async register() {
+      const store = useUserStore();
       this.error = null;
       this.loading = true;
 
-      try {
-        // Simulación de registro
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-
-        console.log("Datos del registro:", this.form);
-        alert("Registro exitoso 🎉");
-        this.$router.push("/login");
-      } catch (err) {
-        this.error = "Ocurrió un error al registrar el usuario.";
-      } finally {
-        this.loading = false;
+      const result = store.register(form)
+      if (result.status == OK) {
+        this.$router.push("/login");  
+      }
+      else {
+        alert("Su registro no se ejecuto exitosamente")
       }
     },
   },
@@ -183,15 +182,15 @@ export default {
 
 .input-group input:focus,
 .input-group select:focus {
-  border-color: #9c27b0;
-  box-shadow: 0 0 3px rgba(156, 39, 176, 0.4);
+  border-color: #667eea;
+  box-shadow: 0 0 3px rgba(18, 26, 117, 0.4);
   outline: none;
 }
 
 button {
   width: 100%;
   padding: 10px;
-  background-color: #9c27b0;
+  background: linear-gradient(135deg, #667eea 0%, #547a6f 100%);
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -201,7 +200,7 @@ button {
 }
 
 button:hover {
-  background-color: #7b1fa2;
+  background-color: #667eea;
 }
 
 button:disabled {
@@ -221,7 +220,7 @@ button:disabled {
 }
 
 .register-link a {
-  color: #9c27b0;
+  color: #667eea;
   text-decoration: none;
   font-weight: 500;
 }

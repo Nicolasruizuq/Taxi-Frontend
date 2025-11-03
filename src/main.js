@@ -47,6 +47,29 @@ const router = new VueRouter({
   linkExactActiveClass: "nav-item active",
 });
 
+router.beforeEach((to, from, next) => {
+  console.log("➡️ Navegando a:", to.path);
+
+  const publicPages = ["/login", "/register"];
+  const authRequired = !publicPages.includes(to.path);
+  const roleId = parseInt(sessionStorage.getItem("role_id"));
+
+  if (!authRequired) return next();
+
+  if (!roleId) {
+    console.warn("🚫 No hay sesión. Redirigiendo a login...");
+    return next("/login");
+  }
+
+  if (to.meta && to.meta.roles && !to.meta.roles.includes(roleId)) {
+    console.warn(`🚫 Rol ${roleId} no puede acceder a ${to.path}`);
+    return next("/app/dashboard");
+  }
+
+  console.log("✅ Acceso permitido a:", to.path);
+  next();
+});
+
 Vue.prototype.$Chartist = Chartist;
 
 Vue.use(VueRouter);
@@ -58,7 +81,6 @@ Vue.use(Notifications);
 /* eslint-disable no-new */
 new Vue({
   el: "#app",
-  render: (h) => h(App),
   router,
   pinia,
   render: (h) => h(App),

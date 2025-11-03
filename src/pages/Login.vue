@@ -71,6 +71,7 @@ export default {
         this.credentials.username,
         this.credentials.password
       );
+      console.log('Result es:', result)
 
       this.loading = false;
 
@@ -80,6 +81,7 @@ export default {
       }
 
       console.log("✅ Usuario autenticado:", result);
+
 
       // Redirigir según el rol
       const roleId = result.attributes.role_id;
@@ -100,7 +102,7 @@ export default {
 /* Tus estilos existentes se mantienen igual */
 .login-wrapper {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #667eea 0%, #547a6f 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -156,7 +158,7 @@ input:focus {
 
 button {
   width: 100%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #667eea 0%, #547a6f 100%);
   color: white;
   padding: 14px;
   border: none;
