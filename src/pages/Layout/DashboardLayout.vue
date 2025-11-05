@@ -31,13 +31,13 @@
         <md-icon>emoji_events</md-icon>
         <p>Rankings</p>
       </sidebar-link>
-      <sidebar-link to="/app/icons">
+      <!--sidebar-link to="/app/icons">
         <md-icon>bubble_chart</md-icon>
         <p>Icons</p>
-      </sidebar-link>
-      <sidebar-link to="/app/maps">
-        <md-icon>location_on</md-icon>
-        <p>Maps</p>
+      </sidebar-link-->
+      <sidebar-link to="/app/upgrade">
+        <md-icon>diamond</md-icon>
+        <p>Conviertete en VIP</p>
       </sidebar-link>
       <sidebar-link to="/app/notifications">
         <md-icon>notifications</md-icon>

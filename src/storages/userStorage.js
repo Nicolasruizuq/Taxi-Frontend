@@ -17,82 +17,40 @@ export const useUserStore = defineStore("user", {
   },
 
   actions: {
+    // Login
     async login(username, password) {
         this.loading = true;
         this.error = null;
 
-        try {
-            // ✅ Simulamos una llamada HTTP con delay
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-
-            // Usuarios de prueba
-            const testUsers = [
-            {
-                username: "nico",
-                password: "12345",
-                response: {
-                data: {
-                    type: "user",
-                    id: "1",
-                    attributes: {
-                    role_id: 1,
-                    name: "Nicolás Ruiz",
-                    username: "nico",
-                    },
-                    links: { self: "/api/v1/users/1" },
-                },
-                },
-            },
-            {
-                username: "juanpa",
-                password: "123456",
-                response: {
-                data: {
-                    type: "user",
-                    id: "2",
-                    attributes: {
-                    role_id: 2,
-                    name: "Juan Pablo",
-                    username: "juanpa",
-                    },
-                    links: { self: "/api/v1/users/2" },
-                },
-                },
-            },
-            {
-                username: "parra",
-                password: "1234567",
-                response: {
-                data: {
-                    type: "user",
-                    id: "3",
-                    attributes: {
-                    role_id: 99,
-                    name: "Andres Parra",
-                    username: "parra",
-                    },
-                    links: { self: "/api/v1/users/3" },
-                },
-                },
-            },
-            ];
-
-            // Buscar usuario de prueba
-            const userFound = testUsers.find(
-            (u) => u.username === username && u.password === password
-            );
-
-            if (!userFound) {
-            throw new Error("Usuario o contraseña incorrectos");
+        try {            
+            const response = await fetch("http://localhost:4000/api/login", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ username, password }),
+            });
+            
+            if (!response.ok) {
+              if (response.status === 401) {
+                throw new Error("Usuario o contraseña incorrectos");
+              } else {
+                throw new Error(`Error del servidor: ${response.status}`);
+              }
             }
 
-            // Simula la respuesta del backend
-            const response = userFound.response.data;
-            console.log('UserStorage response: ', response)
-            sessionStorage.setItem("role_id", response.attributes.role_id);
-            sessionStorage.setItem("name", response.attributes.name);
-            sessionStorage.setItem("username", response.attributes.username);
-            return response;
+            const result = await response.json();
+            console.log("Backend response:", result);
+   
+            const userData = result.data[0].attributes;
+            sessionStorage.setItem("role_id", userData.role_id);
+            sessionStorage.setItem("name", userData.name);
+            sessionStorage.setItem("username", userData.username);
+
+            // Actualizar estado en Pinia
+            this.name = userData.name;
+            this.username = userData.username;
+            this.roleId = userData.role_id;
+
+            return userData;
         } catch (err) {
             this.error = err.message;
             this.user = null;
@@ -103,9 +61,11 @@ export const useUserStore = defineStore("user", {
     },
 
     logout() {
+        
         this.user = null;
         sessionStorage.removeItem("username");
         sessionStorage.removeItem("role_id");
+        
     },
 
     register () {

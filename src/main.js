@@ -54,7 +54,14 @@ router.beforeEach((to, from, next) => {
   const authRequired = !publicPages.includes(to.path);
   const roleId = parseInt(sessionStorage.getItem("role_id"));
 
-  if (!authRequired) return next();
+  if (!authRequired) {
+    // Si intenta ir a /login o /register pero ya tiene sesión, lo mandamos al dashboard
+    if (roleId) {
+      console.log("⚠️ Ya hay sesión activa, redirigiendo a /app/dashboard");
+      return next("/app/dashboard");
+    }
+    return next();
+  }
 
   if (!roleId) {
     console.warn("🚫 No hay sesión. Redirigiendo a login...");

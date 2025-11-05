@@ -71,8 +71,7 @@ export default {
         this.credentials.username,
         this.credentials.password
       );
-      console.log('Result es:', result)
-
+     
       this.loading = false;
 
       if (!result) {
@@ -80,11 +79,10 @@ export default {
         return;
       }
 
-      console.log("✅ Usuario autenticado:", result);
-
+      console.log("Usuario autenticado:", result);
 
       // Redirigir según el rol
-      const roleId = result.attributes.role_id;
+      const roleId = result.role_id;
       if (roleId === 1) this.$router.push("/app/clientprincipal");
       else if (roleId === 2) this.$router.push("/app/driverprincipal");
       else this.$router.push("/app/dashboard");
