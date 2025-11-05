@@ -68,22 +68,50 @@ export const useUserStore = defineStore("user", {
         
     },
 
-    register () {
-        this.loading = true;
-        this.error = null;
+    async register (request) {
+      this.loading = true;
+      this.error = null;
 
-        try {
-        // Simulación de registro
-        new Promise((resolve) => setTimeout(resolve, 1000));
+      this.loading = true;
+      this.error = null;
 
-        console.log("Datos del registro:", this.form);
-        alert("Registro exitoso 🎉");
-        this.$router.push("/login");
+      try {            
+          const response = await fetch("http://localhost:4000/api/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(request),
+          });
+          
+          if (!response.ok) {
+            const errorText = await response.text();
+            this.error = errorText || "Error en el registro";
+            return null;  
+          }
+
+          const result = await response.json();
+          console.log("Backend response:", result);
+
+          if (result.data && result.data.length > 0) {
+            const userData = result.data[0].attributes;        
+            // Actualizar estado en Pinia
+            this.id = userData.id;
+            this.name = userData.name;
+            this.username = userData.username;
+            this.roleId = userData.role_id;
+            this.createdAt = userData.created_at;
+
+            return userData;
+          } else {
+            this.error = "No se pudo crear el usuario";
+            return null;
+          }
       } catch (err) {
-        this.error = "Ocurrió un error al registrar el usuario.";
+          this.error = err.message;
+          this.user = null;
+          return null;
       } finally {
-        this.loading = false;
-      }
+          this.loading = false;
+      }      
     }
   },
 });

@@ -118,7 +118,19 @@ export default {
       this.error = null;
       this.loading = true;
 
-      const result = store.register(form)
+      let roleId = 1; // por defecto Pasajero
+      if (this.form.userType === "Conductor") roleId = 2;
+
+      const requestPayload = {
+        username: this.form.username,
+        password: this.form.password,
+        name: this.form.name,
+        role_id: roleId,
+        vehicle_model: this.form.vehicleModel, 
+        plate: this.form.plate
+      };
+
+      const result = store.register(requestPayload)
       if (result.status == OK) {
         this.$router.push("/login");  
       }
