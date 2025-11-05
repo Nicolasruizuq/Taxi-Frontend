@@ -55,13 +55,13 @@ router.beforeEach((to, from, next) => {
   const roleId = parseInt(sessionStorage.getItem("role_id"));
 
   if (!authRequired) {
-    // Si intenta ir a /login o /register pero ya tiene sesión, lo mandamos al dashboard
-    if (roleId) {
-      console.log("⚠️ Ya hay sesión activa, redirigiendo a /app/dashboard");
-      return next("/app/dashboard");
-    }
-    return next();
+  // ✅ Permitir ir a /login después de registrarse, aunque haya role_id temporal
+  if (roleId && from.path !== "/register") {
+    console.log("⚠️ Ya hay sesión activa, redirigiendo a /app/dashboard");
+    return next("/app/dashboard");
   }
+  return next();
+}
 
   if (!roleId) {
     console.warn("🚫 No hay sesión. Redirigiendo a login...");

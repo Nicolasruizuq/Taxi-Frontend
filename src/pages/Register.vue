@@ -93,8 +93,7 @@
 </template>
 
 <script>
-import { useUserStore } from '../storages/userStorage';
-import { mapState } from 'pinia';
+import { useUserStore } from "../storages/userStorage";
 
 export default {
   name: "Register",
@@ -118,24 +117,56 @@ export default {
       this.error = null;
       this.loading = true;
 
-      let roleId = 1; // por defecto Pasajero
-      if (this.form.userType === "Conductor") roleId = 2;
+      try {
+        let roleId = 1; // por defecto Pasajero
+        if (this.form.userType === "Conductor") roleId = 2;
 
-      const requestPayload = {
-        username: this.form.username,
-        password: this.form.password,
-        name: this.form.name,
-        role_id: roleId,
-        vehicle_model: this.form.vehicleModel, 
-        plate: this.form.plate
-      };
+        const requestPayload = {
+          username: this.form.username,
+          password: this.form.password,
+          name: this.form.name,
+          role_id: roleId,
+          vehicle_model: this.form.vehicleModel,
+          vehicle_plate: this.form.plate,
+        };
 
-      const result = store.register(requestPayload)
-      if (result.status == OK) {
-        this.$router.push("/login");  
-      }
-      else {
-        alert("Su registro no se ejecuto exitosamente")
+        console.log("Enviando payload:", requestPayload);
+
+        const result = await store.register(requestPayload);
+        console.log("Result en register.vue:", result);
+
+        // 🔹 Si el store devuelve los datos correctamente
+        if (result && result.id) {
+          this.$notifications.notify({
+            message: "✅ Registro exitoso. Ahora puedes iniciar sesión.",
+            type: "success",
+            horizontalAlign: "center",
+            verticalAlign: "top",
+          });
+
+          setTimeout(() => {
+            this.$router.push("/login");
+          }, 1200);
+        } else {
+          this.error = store.error || "❌ No se pudo completar el registro.";
+          this.$notifications.notify({
+            message: this.error,
+            type: "danger",
+            horizontalAlign: "center",
+            verticalAlign: "top",
+          });
+        }
+      } catch (err) {
+        console.error("Error en register.vue:", err);
+        this.error = "⚠️ Ocurrió un error inesperado durante el registro.";
+        this.$notifications.notify({
+          message: this.error,
+          type: "warning",
+          horizontalAlign: "center",
+          verticalAlign: "top",
+        });
+      } finally {
+        this.loading = false;
       }
     },
   },
@@ -143,7 +174,7 @@ export default {
 </script>
 
 <style scoped>
-/* Reutiliza el mismo estilo del Login.vue */
+/* Estilos originales */
 .login-wrapper {
   display: flex;
   justify-content: center;
@@ -151,37 +182,31 @@ export default {
   height: 100vh;
   background: #f4f4f4;
 }
-
 .login-container {
   width: 100%;
   max-width: 520px;
   padding: 20px;
 }
-
 .login-card {
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
   padding: 40px 35px;
 }
-
 .login-card h1 {
   text-align: center;
   margin-bottom: 25px;
   font-weight: bold;
   color: #333;
 }
-
 .input-group {
   margin-bottom: 15px;
 }
-
 .input-group label {
   display: block;
   margin-bottom: 5px;
   font-weight: 500;
 }
-
 .input-group input,
 .input-group select {
   width: 100%;
@@ -191,14 +216,12 @@ export default {
   font-size: 14px;
   transition: all 0.2s ease;
 }
-
 .input-group input:focus,
 .input-group select:focus {
   border-color: #667eea;
   box-shadow: 0 0 3px rgba(18, 26, 117, 0.4);
   outline: none;
 }
-
 button {
   width: 100%;
   padding: 10px;
@@ -210,33 +233,27 @@ button {
   cursor: pointer;
   transition: background 0.2s ease;
 }
-
 button:hover {
   background-color: #667eea;
 }
-
 button:disabled {
   opacity: 0.7;
   cursor: not-allowed;
 }
-
 .error-message {
   color: red;
   text-align: center;
   margin-top: 10px;
 }
-
 .register-link {
   text-align: center;
   margin-top: 15px;
 }
-
 .register-link a {
   color: #667eea;
   text-decoration: none;
   font-weight: 500;
 }
-
 .register-link a:hover {
   text-decoration: underline;
 }
