@@ -2,26 +2,26 @@
   <div class="content">
     <div class="md-layout">
       
-      <!-- Barra de progreso - OCUPA TODA LA PARTE SUPERIOR -->
-      <div class="md-layout-item md-size-100">
-        <taxi-map
-          :origen="origenViaje"
-          :destino="destinoViaje"
-          :estado-viaje-externo="estadoViajeActual"
-          header-color="orange"
-          @viaje-completado="onViajeCompletado"
-          @viaje-cancelado="onViajeCancelado"
-          @conductor-llego-origen="onConductorLlegoOrigen"
-        />
-      </div>
-
-      <!-- Formulario de viaje - OCUPA TODO EL ESPACIO DISPONIBLE -->
+      <!-- Formulario de viaje con la barra integrada -->
       <div class="md-layout-item md-medium-size-100 md-size-100">
         <travel-form 
           data-background-color="orange"
           @solicitud-enviada="onSolicitudEnviada"
           :disabled="estadoViajeActual !== 'inicial'"
-        />
+        >
+          <!-- Aquí insertamos la barra como contenido hijo -->
+          <template #barra-viaje>
+            <taxi-map
+              :origen="origenViaje"
+              :destino="destinoViaje"
+              :estado-viaje-externo="estadoViajeActual"
+              header-color="orange"
+              @viaje-completado="onViajeCompletado"
+              @viaje-cancelado="onViajeCancelado"
+              @conductor-llego-origen="onConductorLlegoOrigen"
+            />
+          </template>
+        </travel-form>
       </div>
 
     </div>

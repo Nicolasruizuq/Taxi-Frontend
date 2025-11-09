@@ -41,6 +41,7 @@ export const useUserStore = defineStore("user", {
             console.log("Backend response:", result);
    
             const userData = result.data[0].attributes;
+            sessionStorage.setItem("user_id", userData.id);
             sessionStorage.setItem("role_id", userData.role_id);
             sessionStorage.setItem("name", userData.name);
             sessionStorage.setItem("username", userData.username);
@@ -69,53 +70,53 @@ export const useUserStore = defineStore("user", {
     },
 
     async register(requestPayload) {
-  this.loading = true;
-  this.error = null;
+      this.loading = true;
+      this.error = null;
 
-  try {
-    const response = await fetch("http://localhost:4000/api/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(requestPayload),
-    });
+      try {
+        const response = await fetch("http://localhost:4000/api/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(requestPayload),
+        });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      this.error = errorText || "Error en el registro";
-      console.error("Error en el registro:", this.error);
-      return null;
+        if (!response.ok) {
+          const errorText = await response.text();
+          this.error = errorText || "Error en el registro";
+          console.error("Error en el registro:", this.error);
+          return null;
+        }
+
+        const result = await response.json();
+        console.log("Backend response (register):", result);
+
+        // Validamos el formato esperado
+        const userData = result?.data?.[0]?.attributes;
+        if (userData?.id) {
+          // Guardar datos en sessionStorage
+          sessionStorage.setItem("role_id", userData.role_id);
+          sessionStorage.setItem("name", userData.name);
+          sessionStorage.setItem("username", userData.username);
+
+          // Actualizar estado en Pinia
+          this.name = userData.name;
+          this.username = userData.username;
+          this.roleId = userData.role_id;
+
+          return userData; // 👈 importante para que register.vue lo reciba
+        } else {
+          console.warn("La respuesta del servidor no contiene datos válidos.");
+          this.error = "La respuesta del servidor no contiene datos válidos.";
+          return null;
+        }
+      } catch (err) {
+        console.error("Error en el registro:", err);
+        this.error = "Ocurrió un error inesperado durante el registro.";
+        return null;
+      } finally {
+        this.loading = false;
+      }
     }
-
-    const result = await response.json();
-    console.log("Backend response (register):", result);
-
-    // Validamos el formato esperado
-    const userData = result?.data?.[0]?.attributes;
-    if (userData?.id) {
-      // Guardar datos en sessionStorage
-      sessionStorage.setItem("role_id", userData.role_id);
-      sessionStorage.setItem("name", userData.name);
-      sessionStorage.setItem("username", userData.username);
-
-      // Actualizar estado en Pinia
-      this.name = userData.name;
-      this.username = userData.username;
-      this.roleId = userData.role_id;
-
-      return userData; // 👈 importante para que register.vue lo reciba
-    } else {
-      console.warn("La respuesta del servidor no contiene datos válidos.");
-      this.error = "La respuesta del servidor no contiene datos válidos.";
-      return null;
-    }
-  } catch (err) {
-    console.error("Error en el registro:", err);
-    this.error = "Ocurrió un error inesperado durante el registro.";
-    return null;
-  } finally {
-    this.loading = false;
-  }
-}
 
   },
 });
