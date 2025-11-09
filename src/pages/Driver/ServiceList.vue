@@ -3,60 +3,57 @@
     <md-card>
       <md-card-header :data-background-color="dataBackgroundColor">
         <h4 class="title">Solicitudes de Servicio</h4>
-        <p class="category">Lista de clientes pendientes</p>
+        <p class="category">Solicitudes pendientes</p>
       </md-card-header>
 
       <md-card-content>
         <!-- Lista de servicios -->
         <md-table v-model="servicios" class="service-table">
-          <md-table-row slot="md-table-row" slot-scope="{ item }" class="service-row">
-            <!-- Usuario -->
-            <md-table-cell md-label="Usuario" md-sort-by="usuario">
+          <md-table-row
+            v-for="item in servicios"
+            :key="item.travel_id"
+            class="service-row"
+          >
+            <md-table-cell md-label="Usuario">
               <div class="user-info">
-                <span class="user-name">{{ item.usuario }}</span>
+                <span class="user-name">{{ item.passenger || item.usuario }}</span>
               </div>
             </md-table-cell>
 
-            <!-- Origen -->
-            <md-table-cell md-label="Origen" md-sort-by="origen">
+            <md-table-cell md-label="Origen">
               <div class="location-info">
                 <md-icon>place</md-icon>
-                <span>{{ item.origen }}</span>
+                <span>{{ item.origin || item.origen }}</span>
               </div>
             </md-table-cell>
 
-            <!-- Destino -->
-            <md-table-cell md-label="Destino" md-sort-by="destino">
+            <md-table-cell md-label="Destino">
               <div class="location-info">
                 <md-icon>flag</md-icon>
-                <span>{{ item.destino }}</span>
+                <span>{{ item.destination || item.destino }}</span>
               </div>
             </md-table-cell>
 
-            <!-- Acciones -->
             <md-table-cell md-label="Acciones">
               <div class="action-buttons">
-                <md-button 
+                <md-button
                   class="md-raised md-success"
                   @click="aceptarServicio(item)"
                 >
-                  <md-icon>check</md-icon>
-                  Aceptar
+                  <md-icon>check</md-icon> Aceptar
                 </md-button>
-
-                <md-button 
+                <md-button
                   class="md-raised md-danger"
                   @click="rechazarServicio(item)"
                 >
-                  <md-icon>close</md-icon>
-                  Rechazar
+                  <md-icon>close</md-icon> Rechazar
                 </md-button>
               </div>
             </md-table-cell>
           </md-table-row>
         </md-table>
 
-        <!-- Mensaje si no hay servicios -->
+        <!-- Estado vacío -->
         <div v-if="servicios.length === 0" class="empty-state">
           <md-icon class="empty-icon">assignment</md-icon>
           <h3>No hay solicitudes pendientes</h3>
@@ -65,9 +62,9 @@
       </md-card-content>
     </md-card>
 
-    <!-- Snackbar para notificaciones -->
-    <md-snackbar 
-      :md-active.sync="showSnackbar" 
+    <!-- Snackbar -->
+    <md-snackbar
+      :md-active.sync="showSnackbar"
       :md-duration="4000"
       md-position="center"
     >
@@ -78,6 +75,8 @@
 </template>
 
 <script>
+import { useTravelRequestStore } from "../../storages/travelRequestStorage";
+
 export default {
   name: "service-list",
   props: {
@@ -88,49 +87,48 @@ export default {
   },
   data() {
     return {
-      servicios: [
-        {
-          id: 1,
-          usuario: 'juan_perez',
-          origen: 'Av. Principal #123, Centro',
-          destino: 'Plaza Central, Zona Norte',
-          estado: 'pendiente'
-        },
-        {
-          id: 2,
-          usuario: 'maria_garcia',
-          origen: 'Calle Secundaria #456, Sur',
-          destino: 'Aeropuerto Internacional',
-          estado: 'pendiente'
-        },
-        {
-          id: 3,
-          usuario: 'carlos_lopez',
-          origen: 'Residencial Las Flores #789',
-          destino: 'Centro Comercial Mega',
-          estado: 'pendiente'
-        }
-      ],
+      servicios: [],
       showSnackbar: false,
-      snackbarMessage: ''
+      snackbarMessage: "",
+    };
+  },
+  async mounted() {
+    const travelStore = useTravelRequestStore();
+
+    try {
+      // 🔹 Solo conductor: carga solicitudes pendientes
+      this.servicios = await travelStore.getSolicitudesByStatus("Pendiente");
+      console.log("📦 Solicitudes pendientes cargadas:", this.servicios);
+    } catch (error) {
+      console.error("❌ Error al cargar solicitudes:", error);
+      this.snackbarMessage = "No se pudieron cargar las solicitudes.";
+      this.showSnackbar = true;
     }
   },
   methods: {
     aceptarServicio(servicio) {
-      console.log('Servicio aceptado:', servicio)
-      this.servicios = this.servicios.filter(s => s.id !== servicio.id)
-      this.snackbarMessage = `Servicio de ${servicio.usuario} aceptado`
-      this.showSnackbar = true
+      console.log("✅ Servicio aceptado:", servicio);
+      this.$emit("servicio-aceptado", servicio);
+
+      // Eliminarlo de la lista local
+      this.servicios = this.servicios.filter(
+        (s) => s.travel_id !== servicio.travel_id
+      );
+
+      this.snackbarMessage = `Servicio de ${servicio.passenger} aceptado`;
+      this.showSnackbar = true;
     },
 
     rechazarServicio(servicio) {
-      console.log('Servicio rechazado:', servicio)
-      this.servicios = this.servicios.filter(s => s.id !== servicio.id)
-      this.snackbarMessage = `Servicio de ${servicio.usuario} rechazado`
-      this.showSnackbar = true
-    }
-  }
-}
+      console.log("❌ Servicio rechazado:", servicio);
+      this.servicios = this.servicios.filter(
+        (s) => s.travel_id !== servicio.travel_id
+      );
+      this.snackbarMessage = `Servicio de ${servicio.passenger} rechazado`;
+      this.showSnackbar = true;
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -185,12 +183,10 @@ export default {
   transition: background-color 0.3s ease;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .service-list {
     padding: 10px;
   }
-  
   .action-buttons {
     flex-direction: column;
     gap: 8px;

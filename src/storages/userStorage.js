@@ -66,6 +66,8 @@ export const useUserStore = defineStore("user", {
         this.user = null;
         sessionStorage.removeItem("username");
         sessionStorage.removeItem("role_id");
+        sessionStorage.removeItem("user_id");
+        sessionStorage.removeItem("name");
         
     },
 

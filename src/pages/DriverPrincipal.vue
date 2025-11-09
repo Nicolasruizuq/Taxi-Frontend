@@ -2,7 +2,7 @@
   <div class="content">
     <div class="md-layout">
       
-      <!-- Barra de progreso del conductor - SIEMPRE VISIBLE -->
+      <!-- Barra de progreso del conductor -->
       <div class="md-layout-item md-size-100">
         <driver-progress
           :origen="servicioActivo.origen"
@@ -14,24 +14,23 @@
         />
       </div>
 
-      <!-- Lista de servicios - SOLO VISIBLE SIN SERVICIO ACTIVO -->
+      <!-- Lista de servicios (solo visible cuando no hay servicio activo) -->
       <div v-if="estadoServicio === 'esperando'" class="md-layout-item md-size-100">
         <service-list 
           data-background-color="green"
           @servicio-aceptado="onServicioAceptado"
-        > </service-list>
+        />
       </div>
 
-      <!-- Espacio vacío cuando hay servicio activo -->
-      <div v-if="estadoServicio !== 'esperando'" class="md-layout-item md-size-100">
+      <!-- Mensaje cuando hay servicio activo -->
+      <div v-else class="md-layout-item md-size-100">
         <div class="active-service-space">
           <md-icon>engineering</md-icon>
-          <h4>Servicio en Curso</h4>
-          <p>Completando el viaje hacia {{ servicioActivo.destino }}</p>
+          <h4>Servicio en curso</h4>
+          <p>Conduciendo hacia {{ servicioActivo.destino }}</p>
           <p>Puedes cancelar el servicio desde la barra superior</p>
         </div>
       </div>
-
     </div>
   </div>
 </template>
@@ -57,29 +56,32 @@ export default {
   },
   methods: {
     onServicioAceptado(servicio) {
+      console.log("Evento recibido desde ServiceList:", servicio);
+
       this.estadoServicio = "en_progreso";
       this.servicioActivo = {
-        origen: servicio.origen,
-        destino: servicio.destino
+        origen: servicio.origin || servicio.origen,
+        destino: servicio.destination || servicio.destino
       };
-      
-      console.log("Servicio aceptado:", servicio);
+
+      // Feedback opcional
+      this.$nextTick(() => {
+        console.log(`Servicio iniciado: ${this.servicioActivo.origen} → ${this.servicioActivo.destino}`);
+      });
     },
-    
+
     onServicioCompletado() {
       console.log("Servicio completado automáticamente");
-      
-      // Después de 5 segundos, resetear el estado
       setTimeout(() => {
         this.estadoServicio = "esperando";
         this.servicioActivo = { origen: "", destino: "" };
-      }, 5000);
+      }, 3000);
     },
-    
+
     onServicioCancelado() {
+      console.log("Servicio cancelado por el conductor");
       this.estadoServicio = "esperando";
       this.servicioActivo = { origen: "", destino: "" };
-      console.log("Servicio cancelado por el conductor");
     }
   }
 };
