@@ -1,6 +1,7 @@
 <template>
   <div class="content">
     <div class="md-layout">
+      <!-- 🟠 Ranking de conductores -->
       <div
         class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100"
       >
@@ -10,11 +11,12 @@
             <p class="category">Aquellos que dominaron el arte de conducir</p>
           </md-card-header>
           <md-card-content>
-            <ordered-table></ordered-table>
+            <ordered-table table-header-color="orange"></ordered-table>
           </md-card-content>
         </md-card>
       </div>
 
+      <!-- 🔴 Ranking de clientes -->
       <div
         class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100"
       >
@@ -24,7 +26,7 @@
             <p class="category">Expertos en que alguien haga las cosas por ellos</p>
           </md-card-header>
           <md-card-content>
-            <ranking-table></ranking-table>
+            <ranking-table table-header-color="red"></ranking-table>
           </md-card-content>
         </md-card>
       </div>
@@ -36,6 +38,7 @@
 import { OrderedTable, RankingTable } from "@/components";
 
 export default {
+  name: "RankingView",
   components: {
     OrderedTable,
     RankingTable,
