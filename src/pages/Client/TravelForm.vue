@@ -142,7 +142,7 @@ export default {
       try {
 
         const requestPayload = {
-          passenger_id: store.user_id,
+          passenger_id: Number(sessionStorage.getItem("user_id")),
           origin_location_id: this.selectedOrigin,
           destination_location_id: this.selectedDestination,
         };

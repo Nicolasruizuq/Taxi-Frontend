@@ -93,11 +93,11 @@ export default {
     };
   },
   async mounted() {
-    const travelStore = useTravelRequestStore();
+    this.travelRequestStore = useTravelRequestStore(); // 🔹 Inicializa el store
 
     try {
       // 🔹 Solo conductor: carga solicitudes pendientes
-      this.servicios = await travelStore.getSolicitudesByStatus("Pendiente");
+      this.servicios = await this.travelRequestStore.getSolicitudesByStatus("Pendiente");
       console.log("📦 Solicitudes pendientes cargadas:", this.servicios);
     } catch (error) {
       console.error("❌ Error al cargar solicitudes:", error);
@@ -106,26 +106,46 @@ export default {
     }
   },
   methods: {
-    aceptarServicio(servicio) {
-      console.log("✅ Servicio aceptado:", servicio);
-      this.$emit("servicio-aceptado", servicio);
+    async aceptarServicio(servicio) {
+      try {
+        await this.travelRequestStore.acceptSolicitude(servicio.travel_id);
 
-      // Eliminarlo de la lista local
-      this.servicios = this.servicios.filter(
-        (s) => s.travel_id !== servicio.travel_id
-      );
+        // Actualiza la lista local
+        this.servicios = this.servicios.filter(
+          s => s.travel_id !== servicio.travel_id
+        );
 
-      this.snackbarMessage = `Servicio de ${servicio.passenger} aceptado`;
-      this.showSnackbar = true;
+        this.snackbarMessage = `Servicio de ${servicio.passenger} aceptado`;
+        this.showSnackbar = true;
+
+        this.$emit("servicio-aceptado", servicio);
+      } catch (error) {
+        console.error("❌ Error al aceptar el servicio:", error);
+        this.snackbarMessage = "No se pudo aceptar el servicio.";
+        this.showSnackbar = true;
+      }
     },
 
-    rechazarServicio(servicio) {
-      console.log("❌ Servicio rechazado:", servicio);
-      this.servicios = this.servicios.filter(
-        (s) => s.travel_id !== servicio.travel_id
-      );
-      this.snackbarMessage = `Servicio de ${servicio.passenger} rechazado`;
-      this.showSnackbar = true;
+    async rechazarServicio(servicio) {
+  try {
+    await this.travelRequestStore.rejectSolicitude(servicio.travel_id);
+
+    // 🔹 Actualiza lista local
+    this.servicios = this.servicios.filter(
+      s => s.travel_id !== servicio.travel_id
+    );
+
+    this.snackbarMessage = `Servicio de ${servicio.passenger} rechazado`;
+    this.showSnackbar = true;
+
+    // 🔹 Emite evento al padre
+    this.$emit("servicio-rechazado", servicio);
+
+  } catch (error) {
+    console.error("❌ Error al rechazar el servicio:", error);
+    this.snackbarMessage = "No se pudo rechazar el servicio.";
+    this.showSnackbar = true;
+  }
     },
   },
 };

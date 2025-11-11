@@ -10,8 +10,6 @@
 
       <md-card-content>
         <div class="service-info">
-          
-          <!-- Información del viaje cuando hay servicio activo -->
           <div v-if="estadoServicio !== 'esperando'" class="route-display">
             <div class="location">
               <md-icon class="location-icon start">place</md-icon>
@@ -23,7 +21,7 @@
             </div>
           </div>
 
-          <!-- Estados simplificados -->
+          <!-- Indicadores de estado -->
           <div class="service-states">
             <div class="state-item" :class="{ active: estadoServicio !== 'esperando' }">
               <div class="state-marker">
@@ -50,7 +48,7 @@
             </div>
           </div>
 
-          <!-- Barra de progreso (solo cuando el servicio está en progreso) -->
+          <!-- Progreso del viaje -->
           <div v-if="estadoServicio === 'en_progreso'" class="progress-section">
             <div class="progress-header">
               <span>Progreso del viaje</span>
@@ -66,7 +64,7 @@
             </div>
           </div>
 
-          <!-- Solo botón de cancelar cuando hay servicio activo -->
+          <!-- Botón cancelar -->
           <div class="driver-controls">
             <md-button 
               class="md-danger md-raised" 
@@ -78,7 +76,7 @@
             </md-button>
           </div>
 
-          <!-- Estado de espera -->
+          <!-- Estado esperando -->
           <div v-if="estadoServicio === 'esperando'" class="waiting-service">
             <md-icon class="waiting-icon">directions_car</md-icon>
             <h4>Esperando servicio</h4>
@@ -92,7 +90,6 @@
             <p>El viaje ha finalizado exitosamente</p>
             <p class="tarifa-final">Tarifa final: ${{ tarifaCalculada }}</p>
           </div>
-
         </div>
       </md-card-content>
     </md-card>
@@ -100,25 +97,16 @@
 </template>
 
 <script>
+import { useTravelRequestStore } from "@/storages/travelRequestStorage";
+
 export default {
   name: "DriverProgress",
   props: {
-    origen: {
-      type: String,
-      default: ""
-    },
-    destino: {
-      type: String,
-      default: ""
-    },
-    headerColor: {
-      type: String,
-      default: "blue"
-    },
-    estadoServicioExterno: {
-      type: String,
-      default: "esperando"
-    }
+    origen: { type: String, default: "" },
+    destino: { type: String, default: "" },
+    headerColor: { type: String, default: "blue" },
+    estadoServicioExterno: { type: String, default: "esperando" },
+    travelId: { type: [Number, String], default: null }
   },
   data() {
     return {
@@ -128,7 +116,8 @@ export default {
       tiempoInicioServicio: null,
       tiempoTranscurrido: "0:00",
       tarifaCalculada: "0",
-      intervaloProgreso: null
+      intervaloProgreso: null,
+      travelStore: null
     };
   },
   watch: {
@@ -140,89 +129,96 @@ export default {
       }
     }
   },
+  created() {
+    this.travelStore = useTravelRequestStore();
+  },
   methods: {
     manejarCambioEstado(estado) {
-      // Limpiar intervalos anteriores
       this.finalizarTemporizadores();
 
-      switch(estado) {
-        case 'en_progreso':
-          this.iniciarServicio();
-          this.iniciarProgresoAutomatico();
-          break;
-        case 'completado':
-          this.progresoViaje = 100;
-          this.finalizarTemporizadores();
-          this.calcularTarifaFinal();
-          this.$emit('servicio-completado');
-          break;
-        default:
-          this.progresoViaje = 0;
-          this.tiempoTranscurrido = "0:00";
+      if (estado === "en_progreso") {
+        this.iniciarServicio();
+        this.iniciarProgresoAutomatico();
+      } else if (estado === "completado") {
+        this.progresoViaje = 100;
+        this.finalizarTemporizadores();
+        this.calcularTarifaFinal();
+        this.$emit("servicio-completado", { travel_id: this.travelId });
+      } else {
+        this.progresoViaje = 0;
+        this.tiempoTranscurrido = "0:00";
       }
     },
 
     iniciarServicio() {
       this.tiempoInicioServicio = new Date();
       this.progresoViaje = 0;
-      
-      // Iniciar temporizador
+
       this.intervaloTiempo = setInterval(() => {
         const ahora = new Date();
         const diferencia = Math.floor((ahora - this.tiempoInicioServicio) / 1000);
         const minutos = Math.floor(diferencia / 60);
         const segundos = diferencia % 60;
-        this.tiempoTranscurrido = `${minutos}:${segundos.toString().padStart(2, '0')}`;
+        this.tiempoTranscurrido = `${minutos}:${segundos.toString().padStart(2, "0")}`;
       }, 1000);
     },
 
-    iniciarProgresoAutomatico() {
-      // Progreso automático cada 3 segundos
-      this.intervaloProgreso = setInterval(() => {
-        if (this.estadoServicio === 'en_progreso' && this.progresoViaje < 100) {
-          this.progresoViaje += 5; // 5% cada 3 segundos
-          
-          // Completar automáticamente al llegar al 100%
-          if (this.progresoViaje >= 100) {
-            this.estadoServicio = 'completado';
-            this.$emit('servicio-completado');
+    async iniciarProgresoAutomatico() {
+      this.intervaloProgreso = setInterval(async () => {
+        if (this.estadoServicio !== "en_progreso") return;
+
+        if (this.progresoViaje < 100) {
+          this.progresoViaje = Math.min(this.progresoViaje + 5, 100);
+        }
+
+        if (this.progresoViaje >= 100) {
+          this.finalizarTemporizadores();
+
+          try {
+            if (this.travelId) {
+              // ✅ actualiza estado en backend (usa "completado" para Elixir)
+              await this.travelStore.updateSolicitudeStatus(this.travelId, "completado");
+            }
+
+            this.estadoServicio = "completado";
+            this.calcularTarifaFinal();
+            this.$emit("servicio-completado", { travel_id: this.travelId });
+          } catch (error) {
+            console.error("❌ Error al actualizar el estado del viaje:", error);
+            this.progresoViaje = 95;
           }
         }
       }, 3000);
     },
 
     calcularTarifaFinal() {
-      // Calcular tarifa basada en el tiempo transcurrido
-      const minutos = parseInt(this.tiempoTranscurrido.split(':')[0]);
+      const minutos = parseInt(this.tiempoTranscurrido.split(":")[0]) || 0;
       const tarifaBase = 8000;
       const tarifaPorMinuto = 300;
-      this.tarifaCalculada = (tarifaBase + (minutos * tarifaPorMinuto)).toLocaleString();
+      this.tarifaCalculada = (tarifaBase + minutos * tarifaPorMinuto).toLocaleString();
     },
 
     cancelarServicio() {
       this.finalizarTemporizadores();
-      this.estadoServicio = 'esperando';
+      this.estadoServicio = "esperando";
       this.progresoViaje = 0;
-      this.$emit('servicio-cancelado');
+      this.$emit("servicio-cancelado", { travel_id: this.travelId });
     },
 
     finalizarTemporizadores() {
-      if (this.intervaloTiempo) {
-        clearInterval(this.intervaloTiempo);
-        this.intervaloTiempo = null;
-      }
-      if (this.intervaloProgreso) {
-        clearInterval(this.intervaloProgreso);
-        this.intervaloProgreso = null;
-      }
+      clearInterval(this.intervaloTiempo);
+      clearInterval(this.intervaloProgreso);
+      this.intervaloTiempo = null;
+      this.intervaloProgreso = null;
     }
   },
-
   beforeDestroy() {
     this.finalizarTemporizadores();
   }
 };
 </script>
+
+
 
 <style scoped>
 .driver-progress-container {

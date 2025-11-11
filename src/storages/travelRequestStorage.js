@@ -60,55 +60,152 @@ export const useTravelRequestStore = defineStore("travel_request", {
      * @param {string} status - Estado de las solicitudes a consultar
      */
     async getSolicitudesByStatus(status = "Pendiente") {
-  this.loading = true;
-  this.error = null;
+      this.loading = true;
+      this.error = null;
 
+      try {
+        // 🔹 Lista de estados válidos según tu backend
+        const validStatuses = ["Pendiente", "Aceptado", "Completado", "Cancelado"];
+
+        // 🔹 Normalizamos la primera letra en mayúscula y el resto en minúscula
+        status = status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
+
+        if (!validStatuses.includes(status)) {
+          this.error = `Estado inválido: ${status}`;
+          console.error("❌ Error: estado inválido");
+          return [];
+        }
+
+        // 🔹 Construimos la URL correctamente
+        const url = `http://localhost:4000/api/solicitudesByStatus/${status}`;
+        console.log(`📡 Consultando solicitudes con estado: ${status}`);
+
+        const response = await fetch(url, {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          this.error = errorText || "Error al obtener las solicitudes por estado.";
+          console.error("❌ Error al obtener solicitudes:", this.error);
+          return [];
+        }
+
+        const result = await response.json();
+        console.log("📦 Solicitudes por estado recibidas:", result);
+
+        // 🧩 Normalizamos la respuesta
+        this.travels = Array.isArray(result?.data) ? result.data : result;
+
+        console.log("✅ Solicitudes normalizadas:", this.travels);
+        return this.travels;
+
+      } catch (err) {
+        console.error("❌ Error al cargar solicitudes por estado:", err);
+        this.error =
+          "Ocurrió un error inesperado al cargar las solicitudes.";
+        return [];
+      } finally {
+        this.loading = false;
+      }
+        },
+  
+  async acceptSolicitude(travelId) {
   try {
-    // 🔹 Lista de estados válidos según tu backend
-    const validStatuses = ["Pendiente", "Aceptado", "Completado", "Cancelado"];
-
-    // 🔹 Normalizamos la primera letra en mayúscula y el resto en minúscula
-    status = status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
-
-    if (!validStatuses.includes(status)) {
-      this.error = `Estado inválido: ${status}`;
-      console.error("❌ Error: estado inválido");
-      return [];
-    }
-
-    // 🔹 Construimos la URL correctamente
-    const url = `http://localhost:4000/api/solicitudesByStatus/${status}`;
-    console.log(`📡 Consultando solicitudes con estado: ${status}`);
-
-    const response = await fetch(url, {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    });
+    const response = await fetch(
+      `http://localhost:4000/api/solicitudeDataById/${travelId}`,
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          driver_id: this.user_id,
+          status: "Aceptado"
+        })
+      }
+    );
 
     if (!response.ok) {
       const errorText = await response.text();
-      this.error = errorText || "Error al obtener las solicitudes por estado.";
-      console.error("❌ Error al obtener solicitudes:", this.error);
-      return [];
+      throw new Error(errorText || "Error al aceptar la solicitud");
     }
 
     const result = await response.json();
-    console.log("📦 Solicitudes por estado recibidas:", result);
+    console.log("Solicitud aceptada en el store:", result);
 
-    // 🧩 Normalizamos la respuesta
-    this.travels = Array.isArray(result?.data) ? result.data : result;
-
-    console.log("✅ Solicitudes normalizadas:", this.travels);
-    return this.travels;
-
-  } catch (err) {
-    console.error("❌ Error al cargar solicitudes por estado:", err);
-    this.error =
-      "Ocurrió un error inesperado al cargar las solicitudes.";
-    return [];
-  } finally {
-    this.loading = false;
+    return result; // Solo devuelve la respuesta
+  } catch (error) {
+    console.error("Error en acceptSolicitude:", error);
+    throw error;
   }
-    },
+},
+
+  async rejectSolicitude(travelId) {
+  try {
+    const response = await fetch(
+      `http://localhost:4000/api/solicitudeDataById/${travelId}`,
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          driver_id: this.user_id,
+          status: "Cancelado", // 🔹 status válido
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText || "Error al rechazar la solicitud");
+    }
+
+    const result = await response.json();
+    console.log("Solicitud rechazada en el store:", result);
+
+    // 🚫 IMPORTANTE: Elimina cualquier línea con `.filter()`
+    // No toques this.servicios ni this.travels aquí
+    // El componente que llama se encarga de actualizar la vista
+
+    return result;
+  } catch (error) {
+    console.error("Error en rejectSolicitude:", error);
+    throw error;
+  }
+},
+
+  async updateSolicitudeStatus(travelId) {
+  try {
+    const response = await fetch(
+      `http://localhost:4000/api/solicitudeDataById/${travelId}`,
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          driver_id: this.user_id,
+          status: "Completado", // 🔹 status válido
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText || "Error al completar la solicitud");
+    }
+
+    const result = await response.json();
+    console.log("Solicitud completada en el store:", result);
+
+    // 🚫 IMPORTANTE: Elimina cualquier línea con `.filter()`
+    // No toques this.servicios ni this.travels aquí
+    // El componente que llama se encarga de actualizar la vista
+
+    return result;
+  } catch (error) {
+    console.error("Error en completar solicitud:", error);
+    throw error;
+  }
+},
+
+
   },
 });

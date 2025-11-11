@@ -5,15 +5,24 @@ export const useUserStore = defineStore("user", {
     roleId: sessionStorage.getItem("role_id") || null,
     name: sessionStorage.getItem("name") || null,
     username: sessionStorage.getItem("username") || null,
+    profile: null,
     loading: false,
     error: null,
   }),
 
-  getters: {
+  /*getters: {
     isAuthenticated: (state) => !!state.user,
     roleId: (state) => state.user?.attributes?.role_id || null,
     username: (state) => state.user?.attributes?.username || null,
     name: (state) => state.user?.attributes?.name || null,
+  },*/
+
+  getters: {
+    // Mantén nombres distintos a los del state
+    isAuthenticated: (state) => !!state.name,
+    userRoleId: (state) => state.roleId,
+    userUsername: (state) => state.username,
+    userName: (state) => state.name,
   },
 
   actions: {
@@ -63,12 +72,14 @@ export const useUserStore = defineStore("user", {
 
     logout() {
         
-        this.user = null;
         sessionStorage.removeItem("username");
         sessionStorage.removeItem("role_id");
         sessionStorage.removeItem("user_id");
         sessionStorage.removeItem("name");
-        
+        this.name = null;
+        this.username = null;
+        this.roleId = null;
+        this.userId = null;
     },
 
     async register(requestPayload) {
@@ -118,7 +129,43 @@ export const useUserStore = defineStore("user", {
       } finally {
         this.loading = false;
       }
-    }
+    },
 
+    async load(userId) {
+      try {
+        console.log("📦 Cargando perfil del usuario con ID:", userId);
+        const response = await fetch(`http://localhost:4000/api/profile/${userId}`);
+        const result = await response.json();
+
+        console.log("📦 Respuesta cruda del backend:", result);
+
+        const user =
+          Array.isArray(result.data) && result.data.length > 0
+            ? result.data[0]
+            : result.data || result;
+
+        if (user) {
+          this.id = user.id;
+          this.name = user.name || "";
+          this.username = user.username || "";
+          this.roleId = user.role_id || null;
+          this.created_at = user.created_at || "";
+          this.emailadress = user.emailadress || "";
+          this.country = user.country || "";
+          this.vehicle_model = user.vehicle_model || "";
+          this.vehicle_plate = user.vehicle_plate || "";
+          this.points = user.points || 0;
+
+          console.log("💾 Usuario guardado correctamente en el store:", this.$state);
+          return { ...user };
+        } else {
+          console.warn("⚠️ No se encontró información para el usuario con ID:", userId);
+          return null;
+        }
+      } catch (error) {
+        console.error("❌ Error cargando el perfil:", error);
+        return null;
+      }
+    }
   },
 });
