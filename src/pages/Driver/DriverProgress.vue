@@ -120,7 +120,8 @@ export default {
       rankingStore: null,
       origen: "",
       destino: "",
-      travelId: null
+      travelId: null,
+      error: null
     };
   },
   watch: {
@@ -196,14 +197,12 @@ export default {
               travel_id: this.travelId || activeTrip.travel_id || activeTrip.id || null,
               date_trip: new Date().toISOString().slice(0, 19).replace("T", " "),
               passenger_id: (sessionStorage.getItem("role_id") == 1) ? sessionStorage.getItem("user_id") : null,
-              //passenger_points
               driver_id: (sessionStorage.getItem("role_id") == 2) ? sessionStorage.getItem("user_id") : null,
-              //driver_points
               origin: this.origen || activeTrip.origin || "",
               destination: this.destino || activeTrip.destination || "",
               status: "Completado"
             };
-            console.log("travelData es: ", travelData)
+
             await this.rankingStore.updatePointsOnTripComplete(travelData);
 
             this.estadoServicio = "completado";
@@ -223,25 +222,83 @@ export default {
       this.tarifaCalculada = (tarifaBase + minutos * tarifaPorMinuto).toLocaleString();
     },
 
-  async cancelarServicio() {
-    try {
-      // Llamamos al store para rechazar la solicitud
-      if (this.travelId) {
-        await this.travelStore.rejectSolicitude(this.travelId);
+    async cancelarServicio() {
+      try {
+        // Rechazar solicitud en el store
+        if (this.travelId) {
+          await this.travelStore.rejectSolicitude(this.travelId);
+        }
+
+        // Construir travelData para registrar puntos por cancelación
+        const travelData = {
+          travel_id: this.travelId,
+          date_trip: new Date().toISOString(),
+          passenger_points: 5,
+          driver_points: -20,
+          origin: this.origen,
+          destination: this.destino,
+          driver_id: (sessionStorage.getItem("role_id") == 2) ? sessionStorage.getItem("user_id") : null
+        };
+
+        // Registrar puntos por cancelación
+        await this.updatePointsOnTripCancel(travelData);
+
+        // Limpiamos temporizadores y reiniciamos la UI
+        this.finalizarTemporizadores();
+        this.resetVisual();
+
+        // Emitimos al padre que el servicio fue cancelado
+        this.$emit("servicio-cancelado", { travel_id: this.travelId });
+
+      } catch (error) {
+        console.error("❌ Error al cancelar el servicio:", error);
       }
+    },
 
-      // Limpiamos temporizadores y reiniciamos la UI
-      this.finalizarTemporizadores();
-      this.resetVisual();
+    async updatePointsOnTripCancel(travelData) {
+      try {
+        const travelStore = useTravelRequestStore();
 
-      // Emitimos al padre que el servicio fue cancelado
-      this.$emit("servicio-cancelado", { travel_id: this.travelId });
-      
-    } catch (error) {
-      console.error("❌ Error al cancelar el servicio:", error);
-    }
-  },
+        const passengerId = travelStore.passenger_id;
+        if (!passengerId) throw new Error("❌ No se encontró passenger_id almacenado.");
 
+        const driverId = travelData.driver_id || Number(sessionStorage.getItem("user_id"));
+        if (!driverId) throw new Error("❌ No se encontró driver_id.");
+
+        const payload = {
+          date_trip: travelData.date_trip || new Date().toISOString(),
+          passenger_id: passengerId,
+          passenger_points: travelData.passenger_points || 5,
+          driver_id: driverId,
+          driver_points: travelData.driver_points || -20,
+          origin: travelData.origin || "Desconocido",
+          destination: travelData.destination || "Desconocido",
+          status: "Cancelado",
+        };
+
+        console.log("📡 Enviando datos para cancelar viaje:", payload);
+
+        const response = await fetch("http://localhost:4000/api/ranking", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(errorText || "Error al registrar puntos del viaje cancelado.");
+        }
+
+        const result = await response.json();
+        console.log("✅ Puntos registrados correctamente para viaje cancelado:", result);
+        return result;
+
+      } catch (err) {
+        console.error("❌ Error en updatePointsOnTripCancel:", err);
+        this.error = err.message;
+        throw err;
+      }
+    },
 
     resetVisual() {
       this.estadoServicio = "esperando";
