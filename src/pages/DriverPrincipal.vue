@@ -4,8 +4,7 @@
       <!-- 🔹 Barra de progreso del conductor -->
       <div class="md-layout-item md-size-100">
         <driver-progress
-          :origen="servicioActivo.origen"
-          :destino="servicioActivo.destino"
+          :servicio-seleccionado="servicioActivo"
           :estado-servicio-externo="estadoServicio"
           header-color="blue"
           @servicio-completado="onServicioCompletado"
@@ -30,7 +29,7 @@
         <div class="active-service-space">
           <md-icon>engineering</md-icon>
           <h4>Servicio en curso</h4>
-          <p>Conduciendo hacia {{ servicioActivo.destino }}</p>
+          <p>Conduciendo hacia {{ servicioActivo.destination || servicioActivo.destino }}</p>
           <p>Puedes cancelar el servicio desde la barra superior</p>
         </div>
       </div>
@@ -51,12 +50,8 @@ export default {
   },
   data() {
     return {
-      estadoServicio: "esperando", // "esperando" | "en_progreso"
-      servicioActivo: {
-        id: null,
-        origen: "",
-        destino: "",
-      },
+      estadoServicio: "esperando", // "esperando" | "en_progreso" | "completado"
+      servicioActivo: null, // ahora puede ser null
       travelRequestStore: null,
     };
   },
@@ -71,14 +66,15 @@ export default {
       console.log("Evento recibido desde ServiceList (aceptado):", servicio);
 
       try {
-        const response = await this.travelRequestStore.acceptSolicitude(servicio.travel_id);
-        console.log("✅ Solicitud actualizada correctamente:", response);
+        await this.travelRequestStore.acceptSolicitude(servicio.travel_id);
 
         this.estadoServicio = "en_progreso";
         this.servicioActivo = {
-          id: servicio.travel_id,
-          origen: servicio.origin || servicio.origen,
-          destino: servicio.destination || servicio.destino,
+          travel_id: servicio.travel_id,
+          origin: servicio.origin || servicio.origen,
+          destination: servicio.destination || servicio.destino,
+          passenger_id: servicio.passenger_id || servicio.usuario_id,
+          driver_id: servicio.driver_id || null,
         };
 
         this.$notifications.notify({
@@ -105,8 +101,7 @@ export default {
       console.log("🚫 Evento recibido desde ServiceList (rechazado):", servicio);
 
       try {
-        const response = await this.travelRequestStore.rejectSolicitude(servicio.travel_id);
-        console.log("✅ Solicitud rechazada correctamente:", response);
+        await this.travelRequestStore.rejectSolicitude(servicio.travel_id);
 
         this.$notifications.notify({
           message: `❌ Has rechazado la solicitud de ${servicio.passenger || servicio.usuario}`,
@@ -128,51 +123,35 @@ export default {
     /** =============================
      *  🔹 SERVICIO COMPLETADO
      *  ============================= */
-    async onServicioCompletado() {
-      console.log("✅ Servicio completado (evento recibido)");
+    onServicioCompletado({ travel_id }) {
+      console.log("✅ Evento recibido: servicio completado", travel_id);
 
-      if (!this.servicioActivo.id) {
-        console.warn("⚠️ No hay servicio activo para marcar como completado.");
-        return;
-      }
+      this.$notifications.notify({
+        message: "🎉 ¡Servicio completado exitosamente! Puntos asignados.",
+        type: "success",
+        horizontalAlign: "center",
+        verticalAlign: "top",
+      });
 
-      try {
-        const response = await this.travelRequestStore.updateSolicitudeStatus(
-          this.servicioActivo.id,
-          "completado"
-        );
-        console.log("📦 Estado de solicitud actualizado a completado:", response);
-
-        this.$notifications.notify({
-          message: "✅ El servicio fue marcado como completado.",
-          type: "success",
-          horizontalAlign: "center",
-          verticalAlign: "top",
-        });
-
-        // 🔄 Reset visual después de breve delay
-        setTimeout(() => {
-          this.estadoServicio = "esperando";
-          this.servicioActivo = { id: null, origen: "", destino: "" };
-        }, 3000);
-      } catch (error) {
-        console.error("❌ Error al actualizar estado de la solicitud:", error);
-        this.$notifications.notify({
-          message: "Error al marcar la solicitud como completada.",
-          type: "danger",
-          horizontalAlign: "center",
-          verticalAlign: "top",
-        });
-      }
+      this.estadoServicio = "esperando";
+      this.servicioActivo = null;
     },
 
     /** =============================
      *  🔹 SERVICIO CANCELADO
      *  ============================= */
-    onServicioCancelado() {
-      console.log("🚫 Servicio cancelado por el conductor");
+    onServicioCancelado({ travel_id }) {
+      console.log("🚫 Servicio cancelado por el conductor", travel_id);
+
       this.estadoServicio = "esperando";
-      this.servicioActivo = { id: null, origen: "", destino: "" };
+      this.servicioActivo = null;
+
+      this.$notifications.notify({
+        message: "🚫 Has cancelado el servicio actual.",
+        type: "warning",
+        horizontalAlign: "center",
+        verticalAlign: "top",
+      });
     },
   },
 };

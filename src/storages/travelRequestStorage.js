@@ -6,6 +6,7 @@ export const useTravelRequestStore = defineStore("travel_request", {
     travels: [], // 🧳 Solicitudes filtradas (por estado)
     loading: false,
     error: null,
+    passenger_id: sessionStorage.getItem("user_id") || null,
   }),
 
   actions: {
@@ -133,7 +134,15 @@ export const useTravelRequestStore = defineStore("travel_request", {
     const result = await response.json();
     console.log("Solicitud aceptada en el store:", result);
 
-    return result; // Solo devuelve la respuesta
+    // GUARDAR datos importantes en el store para usar luego
+    this.currentTravel = result.data.attributes;
+    this.passenger_id = result.data.attributes.passenger_id;
+
+    // 🔹 Guardamos también los nombres de origen y destino
+    this.origin_name = result.data.attributes.origin_name || "";
+    this.destination_name = result.data.attributes.destination_name || "";
+
+    return result; // Devuelve la respuesta para quien llamó
   } catch (error) {
     console.error("Error en acceptSolicitude:", error);
     throw error;
