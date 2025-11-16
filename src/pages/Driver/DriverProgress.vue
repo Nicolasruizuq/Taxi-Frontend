@@ -99,6 +99,8 @@
 <script>
 import { useTravelRequestStore } from "@/storages/travelRequestStorage";
 import { useRankingStore } from "@/storages/rankingStorage";
+import { API_URL } from "../../constants/api";
+
 
 export default {
   name: "DriverProgress",
@@ -278,7 +280,7 @@ export default {
 
         console.log("📡 Enviando datos para cancelar viaje:", payload);
 
-        const response = await fetch("http://localhost:4000/api/ranking", {
+        const response = await fetch(`${API_URL}/ranking`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),

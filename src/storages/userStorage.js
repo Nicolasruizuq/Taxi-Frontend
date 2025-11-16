@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { API_URL } from "../constants/api";
 
 export const useUserStore = defineStore("user", {
   state: () => ({
@@ -32,7 +33,7 @@ export const useUserStore = defineStore("user", {
         this.error = null;
 
         try {            
-            const response = await fetch("http://localhost:4000/api/login", {
+            const response = await fetch(`${API_URL}/login`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ username, password }),
@@ -87,7 +88,7 @@ export const useUserStore = defineStore("user", {
       this.error = null;
 
       try {
-        const response = await fetch("http://localhost:4000/api/register", {
+        const response = await fetch(`${API_URL}/register`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(requestPayload),
@@ -116,7 +117,7 @@ export const useUserStore = defineStore("user", {
           this.username = userData.username;
           this.roleId = userData.role_id;
 
-          return userData; // 👈 importante para que register.vue lo reciba
+          return userData; 
         } else {
           console.warn("La respuesta del servidor no contiene datos válidos.");
           this.error = "La respuesta del servidor no contiene datos válidos.";
@@ -134,7 +135,7 @@ export const useUserStore = defineStore("user", {
     async load(userId) {
       try {
         console.log("📦 Cargando perfil del usuario con ID:", userId);
-        const response = await fetch(`http://localhost:4000/api/profile/${userId}`);
+        const response = await fetch(`${API_URL}/profile/${userId}`);
         const result = await response.json();
 
         console.log("📦 Respuesta cruda del backend:", result);

@@ -19,6 +19,8 @@
 
 <script>
 import { SimpleTable } from "@/components";
+import { API_URL } from "../constants/api"
+
 
 export default {
   name: "TableList",
@@ -54,10 +56,10 @@ export default {
         // 🔹 Seleccionar el endpoint correcto según el rol
         let url = "";
         if (this.roleId === "1") {
-          url = `http://localhost:4000/api/solicitudesByPassenger/${encodeURIComponent(this.usuarioId)}`;
+          url = `${API_URL}/solicitudesByPassenger/${encodeURIComponent(this.usuarioId)}`;
           console.log("🧍 Rol pasajero detectado → cargando viajes como pasajero...");
         } else if (this.roleId === "2") {
-          url = `http://localhost:4000/api/solicitudesByDriver/${encodeURIComponent(this.usuarioId)}`;
+          url = `${API_URL}/solicitudesByDriver/${encodeURIComponent(this.usuarioId)}`;
           console.log("🚗 Rol conductor detectado → cargando viajes como conductor...");
         } else {
           console.warn(`⚠️ Rol desconocido (${this.roleId}), no se puede determinar el endpoint.`);

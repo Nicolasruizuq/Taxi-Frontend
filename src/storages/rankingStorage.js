@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { useTravelRequestStore } from "@/storages/travelRequestStorage"; // ajusta la ruta
-
+import { API_URL } from "../constants/api";
 
 
 export const useRankingStore = defineStore("ranking", {
@@ -22,7 +22,7 @@ export const useRankingStore = defineStore("ranking", {
       try {
         console.log("📡 Solicitando ranking de pasajeros...");
 
-        const response = await fetch(`http://localhost:4000/api/rankingsByPassengers`, {
+        const response = await fetch(`${API_URL}/rankingsByPassengers`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -61,7 +61,7 @@ export const useRankingStore = defineStore("ranking", {
       try {
         console.log("📡 Solicitando ranking de conductores...");
 
-        const response = await fetch(`http://localhost:4000/api/rankingsByDrivers`, {
+        const response = await fetch(`${API_URL}/rankingsByDrivers`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -123,7 +123,7 @@ export const useRankingStore = defineStore("ranking", {
 
     console.log("📡 Enviando datos para completar viaje:", payload);
 
-    const response = await fetch("http://localhost:4000/api/ranking", {
+    const response = await fetch(`${API_URL}/ranking`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -171,7 +171,7 @@ export const useRankingStore = defineStore("ranking", {
 
     console.log("📡 Enviando datos para cancelar viaje:", payload);
 
-    const response = await fetch("http://localhost:4000/api/ranking", {
+    const response = await fetch(`${API_URL}/ranking`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),

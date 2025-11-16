@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { API_URL } from "../constants/api";
 
 export const useHistoryStore = defineStore("history", {
   state: () => ({
@@ -23,7 +24,7 @@ export const useHistoryStore = defineStore("history", {
         }
 
         const response = await fetch(
-          `http://localhost:4000/api/solicitudesByPassenger/${this.user_id}`,
+          `${API_URL}/solicitudesByPassenger/${this.user_id}`,
           { method: "GET", headers: { "Content-Type": "application/json" } }
         );
 
@@ -59,7 +60,7 @@ export const useHistoryStore = defineStore("history", {
         }
 
         const response = await fetch(
-          `http://localhost:4000/api/solicitudesByDriver/${this.user_id}`,
+          `${API_URL}/solicitudesByDriver/${this.user_id}`,
           { method: "GET", headers: { "Content-Type": "application/json" } }
         );
 

@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { API_URL } from "../constants/api";
 
 export const useTravelRequestStore = defineStore("travel_request", {
   state: () => ({
@@ -19,7 +20,7 @@ export const useTravelRequestStore = defineStore("travel_request", {
       this.error = null;
 
       try {
-        const response = await fetch("http://localhost:4000/api/solicitude", {
+        const response = await fetch(`${API_URL}/solicitude`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(formData),
@@ -78,7 +79,7 @@ export const useTravelRequestStore = defineStore("travel_request", {
         }
 
         // 🔹 Construimos la URL correctamente
-        const url = `http://localhost:4000/api/solicitudesByStatus/${status}`;
+        const url = `${API_URL}/solicitudesByStatus/${status}`;
         console.log(`📡 Consultando solicitudes con estado: ${status}`);
 
         const response = await fetch(url, {
@@ -115,7 +116,7 @@ export const useTravelRequestStore = defineStore("travel_request", {
   async acceptSolicitude(travelId) {
   try {
     const response = await fetch(
-      `http://localhost:4000/api/solicitudeDataById/${travelId}`,
+      `${API_URL}/solicitudeDataById/${travelId}`,
       {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -152,7 +153,7 @@ export const useTravelRequestStore = defineStore("travel_request", {
   async rejectSolicitude(travelId) {
   try {
     const response = await fetch(
-      `http://localhost:4000/api/solicitudeDataById/${travelId}`,
+      `${API_URL}/solicitudeDataById/${travelId}`,
       {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -185,7 +186,7 @@ export const useTravelRequestStore = defineStore("travel_request", {
   async updateSolicitudeStatus(travelId) {
   try {
     const response = await fetch(
-      `http://localhost:4000/api/solicitudeDataById/${travelId}`,
+      `${API_URL}/solicitudeDataById/${travelId}`,
       {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
