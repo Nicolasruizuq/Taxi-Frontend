@@ -38,29 +38,8 @@
 
           <div class="md-layout-item md-small-size-100 md-size-33">
             <md-field>
-              <label>Correo (Opcional)</label>
-              <md-input v-model="emailadress" type="email"></md-input>
-            </md-field>
-          </div>
-
-          <div class="md-layout-item md-small-size-100 md-size-50">
-            <md-field>
               <label>Nombre</label>
               <md-input v-model="firstname" type="text"></md-input>
-            </md-field>
-          </div>
-
-          <div class="md-layout-item md-small-size-100 md-size-50">
-            <md-field>
-              <label>Redes sociales (opcional)</label>
-              <md-input v-model="lastname" type="text"></md-input>
-            </md-field>
-          </div>
-
-          <div class="md-layout-item md-small-size-100 md-size-33">
-            <md-field>
-              <label>País (Opcional)</label>
-              <md-input v-model="country" type="text"></md-input>
             </md-field>
           </div>
 
@@ -80,19 +59,6 @@
               </md-field>
             </div>
           </template>
-
-          <div class="md-layout-item md-size-100">
-            <md-field maxlength="5">
-              <label>Cuéntanos un poco sobre ti</label>
-              <md-textarea v-model="aboutme"></md-textarea>
-            </md-field>
-          </div>
-
-          <div class="md-layout-item md-size-100 text-right">
-            <md-button class="md-raised md-success" @click.prevent="updateProfile">
-              Actualizar Perfil
-            </md-button>
-          </div>
         </div>
       </md-card-content>
     </md-card>
@@ -153,37 +119,33 @@ export default {
     },
   },
   methods: {
-    loadProfileData(data) {
+    loadProfileData(data) {      
       this.username = data.username || "";
       this.firstname = data.name || "";
-      this.role = data.role_id || "";
+
+      if (data.role_id === 1) {
+        this.role = "Pasajero";
+      } else if (data.role_id === 2) {
+        this.role = "Conductor";
+      } else {
+        this.role = "Administrador"; 
+      }
+
       this.vehicleModel = data.vehicle_model || "";
       this.vehiclePlate = data.vehicle_plate || "";
-      this.points = data.points || "";
+
+      if (data.role_id === 1) {
+        this.points = data.total_passenger_points || 0;
+      } else if (data.role_id === 2) {
+        this.points = data.total_driver_points || 0;
+      } else {
+        this.points = 0; 
+      }
+      
       this.emailadress = data.emailadress || data.email || "";
       this.country = data.country || "";
       this.aboutme = data.aboutme || "";
-    },
-    async updateProfile() {
-      const userStore = useUserStore();
-      try {
-        const updated = {
-          username: this.username,
-          name: this.firstname,
-          email: this.emailadress,
-          country: this.country,
-          aboutme: this.aboutme,
-          vehicle_model: this.vehicleModel,
-          vehicle_plate: this.vehiclePlate,
-        };
-
-        await userStore.updateProfile(updated);
-        alert("✅ Perfil actualizado correctamente");
-      } catch (error) {
-        console.error("❌ Error al actualizar perfil:", error);
-        alert("❌ No se pudo actualizar el perfil");
-      }
-    },
+    },    
   },
 };
 </script>

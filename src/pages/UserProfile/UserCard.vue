@@ -4,11 +4,13 @@
       <img class="img" :src="cardUserImage" />
     </div>
 
-    <md-card-content>
-      <h6 class="category text-gray">Cameo Recurrente</h6>
-      <h4 class="card-title">Fernely Fernelynson</h4>
+    <md-card-content>      
+      <h4 class="card-title">
+        {{ name }} 
+      </h4>
+
       <p class="card-description">
-        Matraz de Erlenmeyer...
+        {{ userName }}
       </p>
       <!--md-button class="md-round md-success">Follow</md-button-->
     </md-card-content>
@@ -17,15 +19,25 @@
 <script>
 export default {
   name: "user-card",
+
   props: {
     cardUserImage: {
       type: String,
       default: require("@/assets/img/faces/marc.jpg"),
     },
   },
+
   data() {
-    return {};
+    return {
+      name: "",
+      userName: "",
+    };
+  },
+
+  mounted() {
+    // Ahora sí existe sessionStorage
+    this.name = sessionStorage.getItem("name") || "Invitado";
+    this.userName = sessionStorage.getItem("username");
   },
 };
 </script>
-<style></style>

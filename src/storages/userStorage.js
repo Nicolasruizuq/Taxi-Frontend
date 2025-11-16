@@ -134,11 +134,8 @@ export const useUserStore = defineStore("user", {
 
     async load(userId) {
       try {
-        console.log("📦 Cargando perfil del usuario con ID:", userId);
         const response = await fetch(`${API_URL}/profile/${userId}`);
         const result = await response.json();
-
-        console.log("📦 Respuesta cruda del backend:", result);
 
         const user =
           Array.isArray(result.data) && result.data.length > 0
@@ -150,13 +147,9 @@ export const useUserStore = defineStore("user", {
           this.name = user.name || "";
           this.username = user.username || "";
           this.roleId = user.role_id || null;
-          this.created_at = user.created_at || "";
-          this.emailadress = user.emailadress || "";
-          this.country = user.country || "";
           this.vehicle_model = user.vehicle_model || "";
           this.vehicle_plate = user.vehicle_plate || "";
-          this.points = user.points || 0;
-
+          
           console.log("💾 Usuario guardado correctamente en el store:", this.$state);
           return { ...user };
         } else {

@@ -46,6 +46,7 @@ export default {
 
       // Llamada al backend a través del store
       const loadedProfile = await userProfileStore.load(userId);
+      
 
       if (loadedProfile) {
         this.profileData = loadedProfile.attributes ? loadedProfile.attributes : loadedProfile;
